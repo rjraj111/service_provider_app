@@ -1,0 +1,112 @@
+{
+  "@@locale": "en",
+
+  "hello": "Hello! 👋",
+  "@hello": { "description": "Greeting on home screen" },
+
+  "findAService": "Find a Service",
+  "@findAService": { "description": "Home screen headline" },
+
+  "searchHint": "Search for a service...",
+  "@searchHint": { "description": "Search bar placeholder text" },
+
+  "serviceCategories": "Service Categories",
+  "@serviceCategories": { "description": "Section title for categories" },
+
+  "seeAll": "See All",
+  "@seeAll": { "description": "Button to see all items" },
+
+  "topRatedProfessionals": "Top Rated Professionals",
+  "@topRatedProfessionals": { "description": "Section title for professionals list" },
+
+  "available": "Available",
+  "@available": { "description": "Professional availability status" },
+
+  "busy": "Busy",
+  "@busy": { "description": "Professional busy status" },
+
+  "reviews": "{count} reviews",
+  "@reviews": {
+    "description": "Review count text",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "home": "Home",
+  "@home": { "description": "Bottom nav label" },
+
+  "videos": "Videos",
+  "@videos": { "description": "Bottom nav label" },
+
+  "profile": "Profile",
+  "@profile": { "description": "Bottom nav label" },
+
+  "categoryPlumber": "Plumber",
+  "@categoryPlumber": { "description": "Service category" },
+
+  "categoryAcRepair": "AC Repair",
+  "@categoryAcRepair": { "description": "Service category" },
+
+  "categoryElectrician": "Electrician",
+  "@categoryElectrician": { "description": "Service category" },
+
+  "categoryPainter": "Painter",
+  "@categoryPainter": { "description": "Service category" },
+
+  "categoryCleaning": "Cleaning",
+  "@categoryCleaning": { "description": "Service category" },
+
+  "categoryCarpenter": "Carpenter",
+  "@categoryCarpenter": { "description": "Service category" },
+
+  "categoryMovers": "Movers",
+  "@categoryMovers": { "description": "Service category" },
+
+  "categoryAppliance": "Appliance",
+  "@categoryAppliance": { "description": "Service category" },
+
+  "yourProfile": "Your Profile",
+  "@yourProfile": { "description": "Profile screen title" },
+
+  "language": "Language",
+  "@language": { "description": "Language section title" },
+
+  "english": "English",
+  "@english": { "description": "English language name" },
+
+  "bengali": "বাংলা",
+  "@bengali": { "description": "Bengali language name" },
+
+  "settings": "Settings",
+  "@settings": { "description": "Settings section title" },
+
+  "notifications": "Notifications",
+  "@notifications": { "description": "Notifications menu item" },
+
+  "darkMode": "Dark Mode",
+  "@darkMode": { "description": "Dark mode toggle" },
+
+  "helpAndSupport": "Help & Support",
+  "@helpAndSupport": { "description": "Help menu item" },
+
+  "logOut": "Log Out",
+  "@logOut": { "description": "Logout button" },
+
+  "appName": "ServiceHub",
+  "@appName": { "description": "Application name" },
+
+  "perHour": "/hr",
+  "@perHour": { "description": "Per hour rate suffix" },
+
+  "perVisit": "/visit",
+  "@perVisit": { "description": "Per visit rate suffix" },
+
+  "yrsExp": "{years} yrs exp",
+  "@yrsExp": {
+    "description": "Years of experience",
+    "placeholders": {
+      "years": { "type": "int" }
+    }
+  }
+}
