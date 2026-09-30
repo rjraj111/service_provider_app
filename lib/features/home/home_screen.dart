@@ -171,24 +171,18 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
 
-            // ─── Universal Search Bar ───────────────────────────────────
+            // --- Universal Search Bar ---
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
                 child: GestureDetector(
-                  onTap: () {
-                    // TODO: Navigate to a dedicated search screen
-                  },
+                  onTap: () {},
                   child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 14),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                     decoration: BoxDecoration(
                       color: colors.surface,
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: colors.border,
-                        width: 1,
-                      ),
+                      border: Border.all(color: colors.border, width: 1),
                       boxShadow: [
                         BoxShadow(
                           color: AppColors.primary.withValues(alpha: 0.06),
@@ -199,11 +193,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     child: Row(
                       children: [
-                        Icon(
-                          Icons.search_rounded,
-                          color: AppColors.primary,
-                          size: 22,
-                        ),
+                        const Icon(Icons.search_rounded, color: AppColors.primary, size: 22),
                         const SizedBox(width: 12),
                         Expanded(
                           child: Text(
@@ -215,17 +205,16 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                         ),
-                        // Mic icon for voice search
-                        Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            gradient: AppColors.voiceSearchGradient,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: const Icon(
-                            Icons.mic_rounded,
-                            color: Colors.white,
-                            size: 18,
+                        GestureDetector(
+                          onTap: () => _showVoiceSearch(context),
+                          behavior: HitTestBehavior.opaque,
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              gradient: AppColors.voiceSearchGradient,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: const Icon(Icons.mic_rounded, color: Colors.white, size: 18),
                           ),
                         ),
                       ],
@@ -870,6 +859,280 @@ class _ProfessionalCard extends StatelessWidget {
                 ),
               ),
             ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Opens the Google-Assistant-style voice search bottom sheet.
+void _showVoiceSearch(BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    barrierColor: Colors.black.withValues(alpha: 0.5),
+    builder: (_) => const _VoiceSearchSheet(),
+  );
+}
+
+// --- Voice Search Bottom Sheet ---
+
+class _VoiceSearchSheet extends StatefulWidget {
+  const _VoiceSearchSheet();
+
+  @override
+  State<_VoiceSearchSheet> createState() => _VoiceSearchSheetState();
+}
+
+class _VoiceSearchSheetState extends State<_VoiceSearchSheet>
+    with TickerProviderStateMixin {
+  late final AnimationController _pulseController;
+  late final Animation<double> _pulseScale;
+  late final Animation<double> _pulseOpacity;
+  late final List<AnimationController> _barControllers;
+  late final List<Animation<double>> _barHeights;
+  bool _isListening = true;
+
+  static const int _barCount = 5;
+  static const List<double> _barDelays = [0.0, 0.15, 0.3, 0.15, 0.0];
+
+  @override
+  void initState() {
+    super.initState();
+    _pulseController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1400),
+    )..repeat();
+    _pulseScale = Tween<double>(begin: 1.0, end: 1.6).animate(
+      CurvedAnimation(parent: _pulseController, curve: Curves.easeOut),
+    );
+    _pulseOpacity = Tween<double>(begin: 0.45, end: 0.0).animate(
+      CurvedAnimation(parent: _pulseController, curve: Curves.easeOut),
+    );
+    _barControllers = List.generate(_barCount, (i) {
+      final ctrl = AnimationController(
+        vsync: this,
+        duration: const Duration(milliseconds: 600),
+      );
+      Future.delayed(
+        Duration(milliseconds: (_barDelays[i] * 1000).toInt()),
+        () { if (mounted) ctrl.repeat(reverse: true); },
+      );
+      return ctrl;
+    });
+    _barHeights = _barControllers.map((ctrl) {
+      return Tween<double>(begin: 6.0, end: 28.0).animate(
+        CurvedAnimation(parent: ctrl, curve: Curves.easeInOut),
+      );
+    }).toList();
+  }
+
+  @override
+  void dispose() {
+    _pulseController.dispose();
+    for (final c in _barControllers) { c.dispose(); }
+    super.dispose();
+  }
+
+  void _toggleListening() {
+    setState(() => _isListening = !_isListening);
+    if (_isListening) {
+      _pulseController.repeat();
+      for (var i = 0; i < _barControllers.length; i++) {
+        Future.delayed(
+          Duration(milliseconds: (_barDelays[i] * 1000).toInt()),
+          () { if (mounted) _barControllers[i].repeat(reverse: true); },
+        );
+      }
+    } else {
+      _pulseController.stop();
+      for (final c in _barControllers) { c.stop(); }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = AppColorsResolved.of(context);
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: colors.surface,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.18),
+            blurRadius: 30,
+            offset: const Offset(0, -6),
+          ),
+        ],
+      ),
+      padding: EdgeInsets.fromLTRB(24, 12, 24, bottomPadding + 32),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Drag handle
+          Container(
+            width: 40, height: 4,
+            decoration: BoxDecoration(
+              color: colors.textHint.withValues(alpha: 0.3),
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          const SizedBox(height: 20),
+          // Header
+          Row(
+            children: [
+              Text('Voice Search',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700,
+                    color: colors.textPrimary)),
+              const Spacer(),
+              GestureDetector(
+                onTap: () => Navigator.pop(context),
+                child: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: colors.textHint.withValues(alpha: 0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(Icons.close_rounded, size: 18,
+                      color: colors.textSecondary),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 40),
+          // Pulsing mic
+          GestureDetector(
+            onTap: _toggleListening,
+            child: SizedBox(
+              width: 140, height: 140,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  if (_isListening)
+                    AnimatedBuilder(
+                      animation: _pulseController,
+                      builder: (_, __) => Transform.scale(
+                        scale: _pulseScale.value,
+                        child: Container(
+                          width: 100, height: 100,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: AppColors.primary
+                                .withValues(alpha: _pulseOpacity.value),
+                          ),
+                        ),
+                      ),
+                    ),
+                  Container(
+                    width: 100, height: 100,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: AppColors.primary.withValues(
+                          alpha: _isListening ? 0.12 : 0.06),
+                      border: Border.all(
+                        color: AppColors.primary.withValues(
+                            alpha: _isListening ? 0.4 : 0.2),
+                        width: 2,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: 76, height: 76,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: _isListening
+                          ? const LinearGradient(
+                              colors: [AppColors.primary, AppColors.primaryLight],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            )
+                          : LinearGradient(colors: [
+                              colors.textHint.withValues(alpha: 0.3),
+                              colors.textHint.withValues(alpha: 0.2),
+                            ]),
+                      boxShadow: _isListening
+                          ? [BoxShadow(
+                              color: AppColors.primary.withValues(alpha: 0.35),
+                              blurRadius: 20, offset: const Offset(0, 6))]
+                          : [],
+                    ),
+                    child: Icon(
+                      _isListening ? Icons.mic_rounded : Icons.mic_off_rounded,
+                      color: Colors.white, size: 32,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 32),
+          // Wave bars
+          SizedBox(
+            height: 36,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: List.generate(_barCount, (i) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  child: AnimatedBuilder(
+                    animation: _barControllers[i],
+                    builder: (_, __) {
+                      final h = _isListening ? _barHeights[i].value : 6.0;
+                      return AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        width: 5, height: h,
+                        decoration: BoxDecoration(
+                          color: _isListening
+                              ? AppColors.primary.withValues(alpha: 0.8)
+                              : colors.textHint.withValues(alpha: 0.3),
+                          borderRadius: BorderRadius.circular(3),
+                        ),
+                      );
+                    },
+                  ),
+                );
+              }),
+            ),
+          ),
+          const SizedBox(height: 20),
+          // Status text
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            child: Text(
+              _isListening ? 'Listening... Speak now' : 'Tap mic to start',
+              key: ValueKey(_isListening),
+              style: TextStyle(
+                fontSize: 15, fontWeight: FontWeight.w500,
+                color: _isListening ? AppColors.primary : colors.textSecondary,
+              ),
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            _isListening ? 'Try: "Find AC repair near me"' : 'Voice search is paused',
+            style: TextStyle(fontSize: 12, color: colors.textHint),
+          ),
+          const SizedBox(height: 32),
+          // Cancel button
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton(
+              onPressed: () => Navigator.pop(context),
+              style: OutlinedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14)),
+                side: BorderSide(color: colors.border, width: 1.5),
+              ),
+              child: Text('Cancel',
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600,
+                    color: colors.textSecondary)),
+            ),
           ),
         ],
       ),
