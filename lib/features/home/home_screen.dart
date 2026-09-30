@@ -1,11 +1,104 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../../l10n/app_localizations.dart';
 
-/// Home screen with unified search bar, service categories, and top professionals.
-class HomeScreen extends StatelessWidget {
+// ─── Promo Banner Data ──────────────────────────────────────────────────────
+
+class _PromoBanner {
+  final String title;
+  final String subtitle;
+  final String badge;
+  final String imageUrl;
+  final Color ctaColor; // CTA button text color
+
+  const _PromoBanner({
+    required this.title,
+    required this.subtitle,
+    required this.badge,
+    required this.imageUrl,
+    required this.ctaColor,
+  });
+}
+
+const List<_PromoBanner> _promoBanners = [
+  _PromoBanner(
+    title: '50% Off AC Repair',
+    subtitle: 'Beat the heat! Expert AC service at half price this season.',
+    badge: 'LIMITED OFFER',
+    imageUrl:
+        'https://images.unsplash.com/photo-1621905252507-b354bc25edac?auto=format&fit=crop&q=80&w=800',
+    ctaColor: Color(0xFF0284C7),
+  ),
+  _PromoBanner(
+    title: 'Eid Special Cleaning',
+    subtitle: 'Sparkling home for Eid! Deep cleaning packages from ৳999.',
+    badge: 'EID SPECIAL',
+    imageUrl:
+        'https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&q=80&w=800',
+    ctaColor: Color(0xFF059669),
+  ),
+  _PromoBanner(
+    title: 'Plumbing Offers',
+    subtitle: 'Free inspection on all plumbing repairs this week only!',
+    badge: 'THIS WEEK',
+    imageUrl:
+        'https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?auto=format&fit=crop&q=80&w=800',
+    ctaColor: Color(0xFFD97706),
+  ),
+  _PromoBanner(
+    title: 'Pro Electricians',
+    subtitle: 'Certified electricians available 24/7. Book now, pay later.',
+    badge: 'NEW',
+    imageUrl:
+        'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&q=80&w=800',
+    ctaColor: Color(0xFF4F46E5),
+  ),
+];
+
+// ─── Home Screen ────────────────────────────────────────────────────────────
+
+/// Home screen with promo banner, unified search bar, service categories,
+/// and top professionals.
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  late final PageController _bannerController;
+  Timer? _autoScrollTimer;
+  int _currentBanner = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _bannerController = PageController(viewportFraction: 1.0);
+    _startAutoScroll();
+  }
+
+  @override
+  void dispose() {
+    _autoScrollTimer?.cancel();
+    _bannerController.dispose();
+    super.dispose();
+  }
+
+  void _startAutoScroll() {
+    _autoScrollTimer = Timer.periodic(const Duration(seconds: 3), (_) {
+      if (!_bannerController.hasClients) return;
+      final nextPage = (_currentBanner + 1) % _promoBanners.length;
+      _bannerController.animateToPage(
+        nextPage,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOutCubic,
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -142,10 +235,45 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
 
+            // ─── Promo Banner Carousel ──────────────────────────────────
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                      height: 188,
+                      child: PageView.builder(
+                        controller: _bannerController,
+                        itemCount: _promoBanners.length,
+                        onPageChanged: (index) {
+                          setState(() => _currentBanner = index);
+                        },
+                        itemBuilder: (context, index) {
+                          return _PromoBannerCard(
+                            banner: _promoBanners[index],
+                          );
+                        },
+                      ),
+                    ),
+                    // ─── Dot Indicator ─────────────────────────────────
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      child: _DotIndicator(
+                        count: _promoBanners.length,
+                        activeIndex: _currentBanner,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
             // ─── Service Categories Header ──────────────────────────────
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 28, 20, 14),
+                padding: const EdgeInsets.fromLTRB(20, 24, 20, 14),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -249,6 +377,212 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+// ─── Promo Banner Card ──────────────────────────────────────────────────────
+
+class _PromoBannerCard extends StatelessWidget {
+  final _PromoBanner banner;
+
+  const _PromoBannerCard({required this.banner});
+
+  // Fallback gradient when image fails to load
+  static const _fallbackGradient = LinearGradient(
+    colors: [Color(0xFF0F0F13), Color(0xFF1A1A2E)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: SizedBox(
+          height: 188,
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              // ─── Background photo ────────────────────────────────
+              Image.network(
+                banner.imageUrl,
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) => Container(
+                  decoration: const BoxDecoration(
+                    gradient: _fallbackGradient,
+                  ),
+                ),
+                loadingBuilder: (context, child, progress) {
+                  if (progress == null) return child;
+                  return Container(
+                    decoration: const BoxDecoration(
+                      gradient: _fallbackGradient,
+                    ),
+                    child: const Center(
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                  );
+                },
+              ),
+
+              // ─── Deep gradient overlay (left: #0F0F13, right: transparent)
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                    stops: const [0.0, 0.55, 1.0],
+                    colors: [
+                      const Color(0xFF0F0F13).withValues(alpha: 0.92),
+                      const Color(0xFF0F0F13).withValues(alpha: 0.55),
+                      Colors.transparent,
+                    ],
+                  ),
+                ),
+              ),
+
+              // ─── Text & CTA — overflow-safe layout ──────────────
+              Positioned(
+                left: 20,
+                top: 0,
+                bottom: 0,
+                right: 80, // leave right edge clear (photo shows through)
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Badge pill
+                    IntrinsicWidth(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 9, vertical: 3),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.18),
+                          borderRadius: BorderRadius.circular(6),
+                          border: Border.all(
+                            color: Colors.white.withValues(alpha: 0.35),
+                          ),
+                        ),
+                        child: Text(
+                          banner.badge,
+                          style: const TextStyle(
+                            fontSize: 9,
+                            fontWeight: FontWeight.w800,
+                            color: Colors.white,
+                            letterSpacing: 1.1,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+
+                    // Title — maxLines: 1, never wraps
+                    Text(
+                      banner.title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white,
+                        height: 1.2,
+                        shadows: [
+                          Shadow(color: Colors.black87, blurRadius: 10),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+
+                    // Subtitle — Flexible so it can shrink, never overflows
+                    Text(
+                      banner.subtitle,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 11.5,
+                        color: Colors.white.withValues(alpha: 0.85),
+                        fontWeight: FontWeight.w400,
+                        height: 1.4,
+                        shadows: const [
+                          Shadow(color: Colors.black54, blurRadius: 6),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+
+                    // Grab Now CTA
+                    GestureDetector(
+                      onTap: () {},
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.25),
+                              blurRadius: 10,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: Text(
+                          'Grab Now →',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                            color: banner.ctaColor,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ─── Dot Indicator ──────────────────────────────────────────────────────────
+
+class _DotIndicator extends StatelessWidget {
+  final int count;
+  final int activeIndex;
+
+  const _DotIndicator({required this.count, required this.activeIndex});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List.generate(count, (index) {
+        final isActive = index == activeIndex;
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+          margin: const EdgeInsets.symmetric(horizontal: 3),
+          width: isActive ? 24 : 8,
+          height: 8,
+          decoration: BoxDecoration(
+            color: isActive
+                ? AppColors.primary
+                : AppColors.primary.withValues(alpha: 0.2),
+            borderRadius: BorderRadius.circular(4),
+          ),
+        );
+      }),
     );
   }
 }
