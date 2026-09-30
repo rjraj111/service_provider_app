@@ -10,12 +10,13 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final colors = AppColorsResolved.of(context);
 
     // Build localized category data
     final categories = _buildCategories(l10n);
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colors.background,
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
@@ -33,7 +34,7 @@ class HomeScreen extends StatelessWidget {
                             l10n.hello,
                             style: TextStyle(
                               fontSize: 14,
-                              color: AppColors.textSecondary,
+                              color: colors.textSecondary,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -43,7 +44,7 @@ class HomeScreen extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.w800,
-                              color: AppColors.textPrimary,
+                              color: colors.textPrimary,
                             ),
                           ),
                         ],
@@ -52,7 +53,7 @@ class HomeScreen extends StatelessWidget {
                     // Notification bell
                     Container(
                       decoration: BoxDecoration(
-                        color: AppColors.surface,
+                        color: colors.surface,
                         borderRadius: BorderRadius.circular(14),
                         boxShadow: [
                           BoxShadow(
@@ -69,7 +70,7 @@ class HomeScreen extends StatelessWidget {
                           backgroundColor: AppColors.error,
                           child: const Icon(Icons.notifications_outlined),
                         ),
-                        color: AppColors.textPrimary,
+                        color: colors.textPrimary,
                       ),
                     ),
                   ],
@@ -89,10 +90,10 @@ class HomeScreen extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 16, vertical: 14),
                     decoration: BoxDecoration(
-                      color: AppColors.surface,
+                      color: colors.surface,
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(
-                        color: AppColors.border,
+                        color: colors.border,
                         width: 1,
                       ),
                       boxShadow: [
@@ -116,7 +117,7 @@ class HomeScreen extends StatelessWidget {
                             l10n.searchHint,
                             style: TextStyle(
                               fontSize: 15,
-                              color: AppColors.textHint,
+                              color: colors.textHint,
                               fontWeight: FontWeight.w400,
                             ),
                           ),
@@ -153,7 +154,7 @@ class HomeScreen extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w700,
-                        color: AppColors.textPrimary,
+                        color: colors.textPrimary,
                       ),
                     ),
                     TextButton(
@@ -205,7 +206,7 @@ class HomeScreen extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w700,
-                        color: AppColors.textPrimary,
+                        color: colors.textPrimary,
                       ),
                     ),
                     TextButton(
@@ -332,6 +333,8 @@ class _CategoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = AppColorsResolved.of(context);
+
     return GestureDetector(
       onTap: () {
         // TODO: Navigate to category detail / listing
@@ -362,7 +365,7 @@ class _CategoryCard extends StatelessWidget {
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary,
+                color: colors.textPrimary,
               ),
             ),
           ],
@@ -397,12 +400,14 @@ class _ProfessionalCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = AppColorsResolved.of(context);
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: colors.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.border, width: 1),
+        border: Border.all(color: colors.border, width: 1),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.04),
@@ -440,7 +445,8 @@ class _ProfessionalCard extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: AppColors.success,
                       shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white, width: 2),
+                      border: Border.all(
+                          color: colors.surface, width: 2),
                     ),
                   ),
                 ),
@@ -458,7 +464,7 @@ class _ProfessionalCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary,
+                    color: colors.textPrimary,
                   ),
                 ),
                 const SizedBox(height: 3),
@@ -466,7 +472,7 @@ class _ProfessionalCard extends StatelessWidget {
                   service,
                   style: TextStyle(
                     fontSize: 13,
-                    color: AppColors.textSecondary,
+                    color: colors.textSecondary,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -481,7 +487,7 @@ class _ProfessionalCard extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w700,
-                        color: AppColors.textPrimary,
+                        color: colors.textPrimary,
                       ),
                     ),
                     const SizedBox(width: 4),
@@ -489,7 +495,7 @@ class _ProfessionalCard extends StatelessWidget {
                       '(${l10n.reviews(reviews)})',
                       style: TextStyle(
                         fontSize: 12,
-                        color: AppColors.textHint,
+                        color: colors.textHint,
                       ),
                     ),
                   ],
@@ -517,7 +523,7 @@ class _ProfessionalCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: isAvailable
                       ? AppColors.success.withValues(alpha: 0.1)
-                      : AppColors.textHint.withValues(alpha: 0.1),
+                      : colors.textHint.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
@@ -525,7 +531,7 @@ class _ProfessionalCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w600,
-                    color: isAvailable ? AppColors.success : AppColors.textHint,
+                    color: isAvailable ? AppColors.success : colors.textHint,
                   ),
                 ),
               ),

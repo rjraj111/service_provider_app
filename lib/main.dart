@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'core/theme/app_theme.dart';
+import 'core/theme/theme_provider.dart';
 import 'core/router/app_router.dart';
 import 'core/providers/locale_provider.dart';
 import 'l10n/app_localizations.dart';
@@ -16,16 +17,6 @@ void main() async {
     DeviceOrientation.portraitDown,
   ]);
 
-  // Set system UI overlay style
-  SystemChrome.setSystemUIOverlayStyle(
-    const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.dark,
-      systemNavigationBarColor: Colors.white,
-      systemNavigationBarIconBrightness: Brightness.dark,
-    ),
-  );
-
   runApp(const ProviderScope(child: ServiceProviderApp()));
 }
 
@@ -36,13 +27,28 @@ class ServiceProviderApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(appRouterProvider);
     final locale = ref.watch(localeProvider);
+    final themeMode = ref.watch(themeModeProvider);
+
+    // Reactively update system chrome based on current theme mode
+    final isDark = themeMode == ThemeMode.dark;
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness:
+            isDark ? Brightness.light : Brightness.dark,
+        systemNavigationBarColor:
+            isDark ? AppTheme.darkTheme.scaffoldBackgroundColor : Colors.white,
+        systemNavigationBarIconBrightness:
+            isDark ? Brightness.light : Brightness.dark,
+      ),
+    );
 
     return MaterialApp.router(
       title: 'ServiceHub',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.light,
+      themeMode: themeMode,
       // ── Localization ──────────────────────────────────────────
       locale: locale,
       localizationsDelegates: AppLocalizations.localizationsDelegates,

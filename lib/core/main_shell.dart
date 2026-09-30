@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
-import 'theme/app_colors.dart';
-import '../../l10n/app_localizations.dart';
+import 'package:service_hub/core/theme/app_colors.dart';
+import 'package:service_hub/l10n/app_localizations.dart';
 
 class MainShell extends StatelessWidget {
   final Widget child;
@@ -35,12 +34,13 @@ class MainShell extends StatelessWidget {
   Widget build(BuildContext context) {
     final selectedIndex = _calculateSelectedIndex(context);
     final l10n = AppLocalizations.of(context);
+    final colors = AppColorsResolved.of(context);
 
     return Scaffold(
       body: child,
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: colors.surface,
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.06),
@@ -59,18 +59,21 @@ class MainShell extends StatelessWidget {
                   icon: Icons.home_rounded,
                   label: l10n.home,
                   isSelected: selectedIndex == 0,
+                  hintColor: colors.textHint,
                   onTap: () => _onItemTapped(context, 0),
                 ),
                 _NavBarItem(
                   icon: Icons.play_circle_rounded,
                   label: l10n.videos,
                   isSelected: selectedIndex == 1,
+                  hintColor: colors.textHint,
                   onTap: () => _onItemTapped(context, 1),
                 ),
                 _NavBarItem(
                   icon: Icons.person_rounded,
                   label: l10n.profile,
                   isSelected: selectedIndex == 2,
+                  hintColor: colors.textHint,
                   onTap: () => _onItemTapped(context, 2),
                 ),
               ],
@@ -88,12 +91,14 @@ class _NavBarItem extends StatelessWidget {
   final IconData icon;
   final String label;
   final bool isSelected;
+  final Color hintColor;
   final VoidCallback onTap;
 
   const _NavBarItem({
     required this.icon,
     required this.label,
     required this.isSelected,
+    required this.hintColor,
     required this.onTap,
   });
 
@@ -117,7 +122,7 @@ class _NavBarItem extends StatelessWidget {
           children: [
             Icon(
               icon,
-              color: isSelected ? AppColors.primary : AppColors.textHint,
+              color: isSelected ? AppColors.primary : hintColor,
               size: 24,
             ),
             const SizedBox(height: 4),
@@ -126,7 +131,7 @@ class _NavBarItem extends StatelessWidget {
               style: TextStyle(
                 fontSize: 11,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                color: isSelected ? AppColors.primary : AppColors.textHint,
+                color: isSelected ? AppColors.primary : hintColor,
               ),
             ),
           ],

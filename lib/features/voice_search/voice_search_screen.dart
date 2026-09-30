@@ -8,8 +8,10 @@ class VoiceSearchScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = AppColorsResolved.of(context);
+
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colors.background,
       appBar: AppBar(
         title: const Text(
           'Voice Search',
@@ -22,7 +24,7 @@ class VoiceSearchScreen extends StatelessWidget {
           children: [
             Container(
               padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 gradient: AppColors.voiceSearchGradient,
                 shape: BoxShape.circle,
               ),
@@ -34,14 +36,14 @@ class VoiceSearchScreen extends StatelessWidget {
               'Voice Search',
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary,
+                    color: colors.textPrimary,
                   ),
             ),
             const SizedBox(height: 8),
             Text(
               'Tap the mic and describe what you need',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppColors.textSecondary,
+                    color: colors.textSecondary,
                   ),
             ),
           ],
