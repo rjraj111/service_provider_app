@@ -319,13 +319,33 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      l10n.topRatedProfessionals,
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                        color: colors.textPrimary,
-                      ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          l10n.topRatedProfessionals,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                            color: colors.textPrimary,
+                          ),
+                        ),
+                        const SizedBox(height: 3),
+                        Row(
+                          children: [
+                            const Icon(Icons.near_me_rounded, size: 12, color: AppColors.primary),
+                            const SizedBox(width: 4),
+                            Text(
+                              'Sorted by: Nearest first (Dhaka)',
+                              style: TextStyle(
+                                fontSize: 11.5,
+                                fontWeight: FontWeight.w600,
+                                color: colors.textSecondary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                     TextButton(
                       onPressed: () {},
@@ -357,6 +377,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     rating: pro['rating'] as double,
                     reviews: pro['reviews'] as int,
                     rate: pro['rate'] as String,
+                    distanceKm: (pro['distanceKm'] as num?)?.toDouble() ?? 1.2,
                     avatarColor: pro['avatarColor'] as Color,
                     isAvailable: pro['isAvailable'] as bool,
                     avatarUrl: pro['avatarUrl'] as String?,
@@ -602,6 +623,7 @@ final List<Map<String, dynamic>> _professionals = [
     'rating': 4.9,
     'reviews': 127,
     'rate': '৳500/hr',
+    'distanceKm': 0.8,
     'avatarColor': const Color(0xFF3B82F6),
     'isAvailable': true,
     'avatarUrl': 'https://images.unsplash.com/photo-1540569014015-19a7be504e3a?auto=format&fit=crop&q=80&w=400',
@@ -612,6 +634,7 @@ final List<Map<String, dynamic>> _professionals = [
     'rating': 4.8,
     'reviews': 94,
     'rate': '৳800/visit',
+    'distanceKm': 1.5,
     'avatarColor': const Color(0xFF06B6D4),
     'isAvailable': true,
     'avatarUrl': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400',
@@ -622,6 +645,7 @@ final List<Map<String, dynamic>> _professionals = [
     'rating': 4.7,
     'reviews': 63,
     'rate': '৳450/hr',
+    'distanceKm': 2.2,
     'avatarColor': const Color(0xFFF59E0B),
     'isAvailable': false,
     'avatarUrl': 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=400',
@@ -632,6 +656,7 @@ final List<Map<String, dynamic>> _professionals = [
     'rating': 4.9,
     'reviews': 201,
     'rate': '৳600/hr',
+    'distanceKm': 3.1,
     'avatarColor': const Color(0xFFEF4444),
     'isAvailable': true,
     'avatarUrl': 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=400',
@@ -642,6 +667,7 @@ final List<Map<String, dynamic>> _professionals = [
     'rating': 4.8,
     'reviews': 156,
     'rate': '৳700/hr',
+    'distanceKm': 4.0,
     'avatarColor': const Color(0xFF8B5CF6),
     'isAvailable': true,
     'avatarUrl': 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=400',
@@ -713,6 +739,7 @@ class _ProfessionalCard extends StatelessWidget {
   final double rating;
   final int reviews;
   final String rate;
+  final double distanceKm;
   final Color avatarColor;
   final bool isAvailable;
   final String? avatarUrl;
@@ -724,6 +751,7 @@ class _ProfessionalCard extends StatelessWidget {
     required this.rating,
     required this.reviews,
     required this.rate,
+    required this.distanceKm,
     required this.avatarColor,
     required this.isAvailable,
     this.avatarUrl,
@@ -746,6 +774,7 @@ class _ProfessionalCard extends StatelessWidget {
               'rating': rating,
               'reviews': reviews,
               'rate': rate,
+              'distanceKm': distanceKm,
               'avatarColor': avatarColor,
               'isAvailable': isAvailable,
               'avatarUrl': avatarUrl,
@@ -843,25 +872,53 @@ class _ProfessionalCard extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 6),
-                    Row(
+                    Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      spacing: 6,
+                      runSpacing: 4,
                       children: [
-                        const Icon(Icons.star_rounded,
-                            color: Color(0xFFFBBF24), size: 16),
-                        const SizedBox(width: 3),
-                        Text(
-                          rating.toString(),
-                          style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w700,
-                            color: colors.textPrimary,
-                          ),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.star_rounded,
+                                color: Color(0xFFFBBF24), size: 16),
+                            const SizedBox(width: 3),
+                            Text(
+                              rating.toString(),
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w700,
+                                color: colors.textPrimary,
+                              ),
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              '(${l10n.reviews(reviews)})',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: colors.textHint,
+                              ),
+                            ),
+                          ],
                         ),
-                        const SizedBox(width: 4),
-                        Text(
-                          '(${l10n.reviews(reviews)})',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: colors.textHint,
+                        // Stylish Distance Badge
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: AppColors.primary.withValues(alpha: 0.08),
+                            borderRadius: BorderRadius.circular(6),
+                            border: Border.all(
+                              color: AppColors.primary.withValues(alpha: 0.22),
+                              width: 0.8,
+                            ),
+                          ),
+                          child: Text(
+                            '📍 $distanceKm km away',
+                            style: const TextStyle(
+                              fontSize: 10.5,
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.primary,
+                            ),
                           ),
                         ),
                       ],

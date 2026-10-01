@@ -8,6 +8,7 @@ import '../../features/video_feed/video_feed_screen.dart';
 import '../../features/profile/profile_screen.dart';
 import '../../features/provider/provider_details_screen.dart';
 import '../../features/search/ai_search_screen.dart';
+import '../../features/tracking/live_tracking_screen.dart';
 
 /// Provides the app-wide GoRouter instance via Riverpod.
 final appRouterProvider = Provider<GoRouter>((ref) {
@@ -59,6 +60,28 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/ai-search',
         builder: (context, state) => const AiSearchScreen(),
+      ),
+      GoRoute(
+        path: '/tracking',
+        builder: (context, state) {
+          final extra = state.extra;
+          if (extra is Map<String, dynamic>) {
+            final pName = (extra['providerName'] ?? extra['name']) as String? ?? 'Rahim Uddin';
+            final sName = (extra['serviceName'] ?? extra['service'] ?? extra['profession']) as String? ?? 'Plumber · 8 yrs exp';
+            final etaStr = (extra['eta'] ?? (extra['etaMinutes'] != null ? '${extra['etaMinutes']} mins' : null)) as String? ?? '12 mins';
+            final distStr = (extra['distance'] ?? (extra['distanceKm'] != null ? '${extra['distanceKm']} km' : null)) as String? ?? '1.8 km';
+
+            return LiveTrackingScreen(
+              providerName: pName,
+              serviceName: sName,
+              avatarUrl: extra['avatarUrl'] as String?,
+              avatarColor: extra['avatarColor'] as Color? ?? const Color(0xFF3B82F6),
+              initialEta: etaStr,
+              initialDistance: distStr,
+            );
+          }
+          return const LiveTrackingScreen();
+        },
       ),
     ],
   );

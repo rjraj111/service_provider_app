@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../core/theme/app_colors.dart';
 
@@ -16,6 +17,7 @@ class BookingCheckoutSheet extends StatefulWidget {
   final String rate;
   final Color avatarColor;
   final String? avatarUrl;
+  final BuildContext? parentContext;
 
   const BookingCheckoutSheet({
     super.key,
@@ -24,6 +26,7 @@ class BookingCheckoutSheet extends StatefulWidget {
     required this.rate,
     required this.avatarColor,
     this.avatarUrl,
+    this.parentContext,
   });
 
   /// Convenient static helper to show this sheet
@@ -46,6 +49,7 @@ class BookingCheckoutSheet extends StatefulWidget {
         rate: rate,
         avatarColor: avatarColor,
         avatarUrl: avatarUrl,
+        parentContext: context,
       ),
     );
   }
@@ -141,12 +145,16 @@ class _BookingCheckoutSheetState extends State<BookingCheckoutSheet> {
       PaymentMethod.cashOnDelivery => 'Cash on Delivery',
     };
 
+    // Capture the active parent context before closing bottom sheet
+    final targetContext = widget.parentContext ?? Navigator.of(context, rootNavigator: true).context;
+    if (!targetContext.mounted) return;
+
     // Close bottom sheet
     Navigator.of(context).pop();
 
-    // Show celebratory success dialog
+    // Show celebratory success dialog on the active parent context
     _showSuccessDialog(
-      context: context,
+      context: targetContext,
       providerName: widget.providerName,
       serviceName: widget.serviceName,
       dateStr: '${selectedDate['label']} (${selectedDate['day']} ${selectedDate['month']})',
@@ -970,8 +978,8 @@ class _BookingCheckoutSheetState extends State<BookingCheckoutSheet> {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (ctx) {
-        final dialogColors = AppColorsResolved.of(ctx);
+      builder: (context) {
+        final dialogColors = AppColorsResolved.of(context);
         return Dialog(
           backgroundColor: Colors.transparent,
           insetPadding: const EdgeInsets.symmetric(horizontal: 20),
@@ -1057,46 +1065,125 @@ class _BookingCheckoutSheetState extends State<BookingCheckoutSheet> {
 
                 const SizedBox(height: 24),
 
-                // Done Button
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(ctx).pop();
-                      // Show confirmation floating snackbar
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Row(
-                            children: [
-                              const Icon(Icons.celebration_rounded, color: Colors.white, size: 20),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                child: Text('Service booked with $providerName for $dateStr at $timeStr!'),
-                              ),
-                            ],
-                          ),
-                          backgroundColor: AppColors.success,
-                          behavior: SnackBarBehavior.floating,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                          duration: const Duration(seconds: 4),
+                // Action Buttons
+                Column(
+                  children: [
+                    // Track Provider Button (Primary)
+                    Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [AppColors.primary, AppColors.primaryLight],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
                         ),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                      elevation: 0,
-                    ),
-                    child: const Text(
-                      'Done',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.primary.withValues(alpha: 0.35),
+                            blurRadius: 16,
+                            offset: const Offset(0, 6),
+                          ),
+                        ],
+                      ),
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          context.pop();
+                          context.push(
+                            '/tracking',
+                            extra: {
+                              'providerName': providerName,
+                              'profession': serviceName.split('·').first.trim(),
+                              'avatarUrl': widget.avatarUrl ??
+                                  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400',
+                              'rating': 4.9,
+                              'etaMinutes': 12,
+                              'distanceKm': 1.4,
+                              'vehicleType': 'Yamaha FZ-S (White)',
+                              'plateNumber': 'Dhaka Metro HA-44-1290',
+                              'phone': '+880 1712-345678',
+                            },
+                          );
+                        },
+                        icon: const Icon(Icons.near_me_rounded, color: Colors.white, size: 20),
+                        label: const Text(
+                          'Track Provider Live',
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                            letterSpacing: 0.2,
+                          ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.transparent,
+                          shadowColor: Colors.transparent,
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        ),
                       ),
                     ),
-                  ),
+                    const SizedBox(height: 10),
+
+                    // Done Button (Secondary)
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton(
+                        onPressed: () {
+                          context.pop();
+                          // Show confirmation floating snackbar with Track action
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Row(
+                                children: [
+                                  const Icon(Icons.celebration_rounded, color: Colors.white, size: 20),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Text('Service booked with $providerName for $dateStr at $timeStr!'),
+                                  ),
+                                ],
+                              ),
+                              action: SnackBarAction(
+                                label: 'Track',
+                                textColor: Colors.white,
+                                onPressed: () {
+                                  context.push(
+                                    '/tracking',
+                                    extra: {
+                                      'providerName': providerName,
+                                      'profession': serviceName.split('·').first.trim(),
+                                      'avatarUrl': widget.avatarUrl ??
+                                          'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400',
+                                      'rating': 4.9,
+                                      'etaMinutes': 12,
+                                      'distanceKm': 1.4,
+                                    },
+                                  );
+                                },
+                              ),
+                              backgroundColor: AppColors.success,
+                              behavior: SnackBarBehavior.floating,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              duration: const Duration(seconds: 5),
+                            ),
+                          );
+                        },
+                        style: OutlinedButton.styleFrom(
+                          side: BorderSide(color: dialogColors.border),
+                          padding: const EdgeInsets.symmetric(vertical: 13),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                        ),
+                        child: Text(
+                          'Done',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: dialogColors.textSecondary,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),

@@ -771,7 +771,7 @@ class _AiSearchScreenState extends State<AiSearchScreen> with TickerProviderStat
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Available Specialists for this Issue',
+                'Nearest Specialists',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w800,
@@ -779,32 +779,54 @@ class _AiSearchScreenState extends State<AiSearchScreen> with TickerProviderStat
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
                 decoration: BoxDecoration(
-                  color: AppColors.success.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(6),
+                  color: AppColors.primary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: AppColors.primary.withValues(alpha: 0.25),
+                  ),
                 ),
-                child: const Text(
-                  'Verified Pros',
-                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: AppColors.success),
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.near_me_rounded, size: 12, color: AppColors.primary),
+                    SizedBox(width: 4),
+                    Text(
+                      'Nearest First',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
           ),
           const SizedBox(height: 12),
 
-          // Provider Cards List
-          ...diag.matchedPros.map((pro) {
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: _MatchedProviderCard(
-                proData: pro,
-                onTap: () {
-                  context.push('/provider-details', extra: pro);
-                },
-              ),
-            );
-          }),
+          // Provider Cards List (Sorted with nearest first)
+          ...(() {
+            final sortedList = List<Map<String, dynamic>>.from(diag.matchedPros);
+            sortedList.sort((a, b) {
+              final distA = (a['distanceKm'] as num?)?.toDouble() ?? 99.0;
+              final distB = (b['distanceKm'] as num?)?.toDouble() ?? 99.0;
+              return distA.compareTo(distB);
+            });
+            return sortedList.map((pro) {
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: _MatchedProviderCard(
+                  proData: pro,
+                  onTap: () {
+                    context.push('/provider-details', extra: pro);
+                  },
+                ),
+              );
+            });
+          })(),
 
           const SizedBox(height: 16),
 
@@ -960,19 +982,54 @@ class _MatchedProviderCard extends StatelessWidget {
                       proData['service'] as String,
                       style: TextStyle(fontSize: 12.5, color: colors.textSecondary, fontWeight: FontWeight.w500),
                     ),
-                    const SizedBox(height: 4),
-                    Row(
+                    const SizedBox(height: 5),
+                    Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      spacing: 6,
+                      runSpacing: 4,
                       children: [
-                        const Icon(Icons.star_rounded, color: Color(0xFFFBBF24), size: 15),
-                        const SizedBox(width: 2),
-                        Text(
-                          '${proData['rating']}',
-                          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: colors.textPrimary),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.star_rounded, color: Color(0xFFFBBF24), size: 15),
+                            const SizedBox(width: 2),
+                            Text(
+                              '${proData['rating']}',
+                              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: colors.textPrimary),
+                            ),
+                            const SizedBox(width: 3),
+                            Text(
+                              '(${proData['reviews']})',
+                              style: TextStyle(fontSize: 11, color: colors.textHint),
+                            ),
+                          ],
                         ),
-                        const SizedBox(width: 4),
-                        Text(
-                          '(${proData['reviews']} reviews) · 1.5 km away',
-                          style: TextStyle(fontSize: 11, color: colors.textHint),
+                        // Stylish Distance Badge
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2.5),
+                          decoration: BoxDecoration(
+                            color: AppColors.primary.withValues(alpha: 0.08),
+                            borderRadius: BorderRadius.circular(6),
+                            border: Border.all(
+                              color: AppColors.primary.withValues(alpha: 0.2),
+                              width: 0.8,
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Text('📍', style: TextStyle(fontSize: 10)),
+                              const SizedBox(width: 3),
+                              Text(
+                                '${proData['distanceKm'] ?? '1.2'} km away',
+                                style: const TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.primary,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
@@ -1249,6 +1306,7 @@ _AiDiagnosisModel _resolveDiagnosis(String query) {
           'rating': 4.8,
           'reviews': 94,
           'rate': '৳800/visit',
+          'distanceKm': 1.2,
           'avatarColor': Color(0xFF06B6D4),
           'isAvailable': true,
           'avatarUrl': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400',
@@ -1259,6 +1317,7 @@ _AiDiagnosisModel _resolveDiagnosis(String query) {
           'rating': 4.9,
           'reviews': 127,
           'rate': '৳750/visit',
+          'distanceKm': 2.4,
           'avatarColor': Color(0xFF3B82F6),
           'isAvailable': true,
           'avatarUrl': 'https://images.unsplash.com/photo-1540569014015-19a7be504e3a?auto=format&fit=crop&q=80&w=400',
@@ -1284,9 +1343,21 @@ _AiDiagnosisModel _resolveDiagnosis(String query) {
           'rating': 4.7,
           'reviews': 63,
           'rate': '৳450/hr',
+          'distanceKm': 0.8,
           'avatarColor': Color(0xFFF59E0B),
           'isAvailable': true,
           'avatarUrl': 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=400',
+        },
+        {
+          'name': 'Farhan Chowdhury',
+          'service': 'Industrial Electrician',
+          'rating': 4.9,
+          'reviews': 88,
+          'rate': '৳550/hr',
+          'distanceKm': 2.3,
+          'avatarColor': Color(0xFF10B981),
+          'isAvailable': true,
+          'avatarUrl': 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=400',
         },
       ],
     );
@@ -1309,9 +1380,21 @@ _AiDiagnosisModel _resolveDiagnosis(String query) {
           'rating': 4.9,
           'reviews': 201,
           'rate': '৳600/hr',
+          'distanceKm': 1.1,
           'avatarColor': Color(0xFFEF4444),
           'isAvailable': true,
           'avatarUrl': 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=400',
+        },
+        {
+          'name': 'Kabir Hossain',
+          'service': 'Interior Finishes Specialist',
+          'rating': 4.8,
+          'reviews': 114,
+          'rate': '৳650/hr',
+          'distanceKm': 3.4,
+          'avatarColor': Color(0xFF8B5CF6),
+          'isAvailable': true,
+          'avatarUrl': 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=400',
         },
       ],
     );
@@ -1336,6 +1419,7 @@ _AiDiagnosisModel _resolveDiagnosis(String query) {
         'rating': 4.9,
         'reviews': 127,
         'rate': '৳500/hr',
+        'distanceKm': 0.9,
         'avatarColor': Color(0xFF3B82F6),
         'isAvailable': true,
         'avatarUrl': 'https://images.unsplash.com/photo-1540569014015-19a7be504e3a?auto=format&fit=crop&q=80&w=400',
@@ -1346,6 +1430,7 @@ _AiDiagnosisModel _resolveDiagnosis(String query) {
         'rating': 4.8,
         'reviews': 156,
         'rate': '৳700/hr',
+        'distanceKm': 2.6,
         'avatarColor': Color(0xFF8B5CF6),
         'isAvailable': true,
         'avatarUrl': 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=400',
