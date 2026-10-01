@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../core/theme/app_colors.dart';
 
@@ -748,11 +749,14 @@ class _LiveTrackingScreenState extends State<LiveTrackingScreen> with TickerProv
               Expanded(
                 child: OutlinedButton.icon(
                   onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Opening chat with ${widget.providerName}...'),
-                        behavior: SnackBarBehavior.floating,
-                      ),
+                    context.push(
+                      '/chat',
+                      extra: {
+                        'providerName': widget.providerName,
+                        'serviceName': widget.serviceName,
+                        'avatarUrl': widget.avatarUrl,
+                        'avatarColor': widget.avatarColor,
+                      },
                     );
                   },
                   icon: const Icon(Icons.chat_bubble_outline_rounded, size: 18),

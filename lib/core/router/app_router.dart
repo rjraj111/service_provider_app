@@ -9,6 +9,7 @@ import '../../features/profile/profile_screen.dart';
 import '../../features/provider/provider_details_screen.dart';
 import '../../features/search/ai_search_screen.dart';
 import '../../features/tracking/live_tracking_screen.dart';
+import '../../features/chat/chat_screen.dart';
 
 /// Provides the app-wide GoRouter instance via Riverpod.
 final appRouterProvider = Provider<GoRouter>((ref) {
@@ -81,6 +82,23 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             );
           }
           return const LiveTrackingScreen();
+        },
+      ),
+      GoRoute(
+        path: '/chat',
+        builder: (context, state) {
+          final extra = state.extra;
+          if (extra is Map<String, dynamic>) {
+            final pName = (extra['providerName'] ?? extra['name']) as String? ?? 'Rahim Uddin';
+            final sName = (extra['serviceName'] ?? extra['service'] ?? extra['profession']) as String? ?? 'Plumber · 8 yrs exp';
+            return ChatScreen(
+              providerName: pName,
+              serviceName: sName,
+              avatarUrl: extra['avatarUrl'] as String?,
+              avatarColor: extra['avatarColor'] as Color? ?? const Color(0xFF3B82F6),
+            );
+          }
+          return const ChatScreen();
         },
       ),
     ],

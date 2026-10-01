@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../core/theme/app_colors.dart';
 import 'booking_checkout_sheet.dart';
@@ -676,11 +677,14 @@ class _CoverAndProfileHeader extends StatelessWidget {
                     Expanded(
                       child: OutlinedButton.icon(
                         onPressed: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Starting chat with $name...'),
-                              behavior: SnackBarBehavior.floating,
-                            ),
+                          context.push(
+                            '/chat',
+                            extra: {
+                              'providerName': name,
+                              'serviceName': service,
+                              'avatarUrl': avatarUrl,
+                              'avatarColor': avatarColor,
+                            },
                           );
                         },
                         icon: const Icon(Icons.chat_bubble_outline_rounded, size: 17),
