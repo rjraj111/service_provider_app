@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../../l10n/app_localizations.dart';
+import '../reviews/review_bottom_sheet.dart';
 
 // ─── Promo Banner Data ──────────────────────────────────────────────────────
 
@@ -107,6 +108,26 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       backgroundColor: colors.background,
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          showReviewBottomSheet(
+            context,
+            providerName: 'Rahim Uddin',
+            serviceName: 'Master AC Servicing',
+          );
+        },
+        backgroundColor: AppColors.primary,
+        foregroundColor: Colors.white,
+        elevation: 4,
+        icon: const Icon(Icons.star_rounded, size: 22, color: Colors.amber),
+        label: const Text(
+          'Review & Tip (Demo)',
+          style: TextStyle(
+            fontWeight: FontWeight.w800,
+            fontSize: 13.5,
+          ),
+        ),
+      ),
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
