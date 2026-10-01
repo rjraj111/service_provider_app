@@ -29,32 +29,28 @@ const List<_PromoBanner> _promoBanners = [
     title: '50% Off AC Repair',
     subtitle: 'Beat the heat! Expert AC service at half price this season.',
     badge: 'LIMITED OFFER',
-    imageUrl:
-        'https://images.unsplash.com/photo-1621905252507-b354bc25edac?auto=format&fit=crop&q=80&w=800',
+    imageUrl: 'lib/assets/images/ac repair.png',
     ctaColor: Color(0xFF0284C7),
   ),
   _PromoBanner(
     title: 'Eid Special Cleaning',
     subtitle: 'Sparkling home for Eid! Deep cleaning packages from ৳999.',
     badge: 'EID SPECIAL',
-    imageUrl:
-        'https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&q=80&w=800',
+    imageUrl: 'lib/assets/images/home cleaning.png',
     ctaColor: Color(0xFF059669),
   ),
   _PromoBanner(
     title: 'Plumbing Offers',
     subtitle: 'Free inspection on all plumbing repairs this week only!',
     badge: 'THIS WEEK',
-    imageUrl:
-        'https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?auto=format&fit=crop&q=80&w=800',
+    imageUrl: 'lib/assets/images/plumbing solution.png',
     ctaColor: Color(0xFFD97706),
   ),
   _PromoBanner(
     title: 'Pro Electricians',
     subtitle: 'Certified electricians available 24/7. Book now, pay later.',
     badge: 'NEW',
-    imageUrl:
-        'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&q=80&w=800',
+    imageUrl: 'lib/assets/images/electrician working pic.png',
     ctaColor: Color(0xFF4F46E5),
   ),
 ];
@@ -282,7 +278,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () => context.push('/explore'),
                       child: Text(
                         l10n.seeAll,
                         style: const TextStyle(
@@ -312,6 +308,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       icon: category['icon'] as IconData,
                       label: category['label'] as String,
                       color: category['color'] as Color,
+                      image: category['image'] as String?,
                     );
                   },
                 ),
@@ -406,13 +403,6 @@ class _PromoBannerCard extends StatelessWidget {
 
   const _PromoBannerCard({required this.banner});
 
-  // Fallback gradient when image fails to load
-  static const _fallbackGradient = LinearGradient(
-    colors: [Color(0xFF0F0F13), Color(0xFF1A1A2E)],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-  );
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -425,28 +415,9 @@ class _PromoBannerCard extends StatelessWidget {
             fit: StackFit.expand,
             children: [
               // ─── Background photo ────────────────────────────────
-              Image.network(
+              Image.asset(
                 banner.imageUrl,
                 fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => Container(
-                  decoration: const BoxDecoration(
-                    gradient: _fallbackGradient,
-                  ),
-                ),
-                loadingBuilder: (context, child, progress) {
-                  if (progress == null) return child;
-                  return Container(
-                    decoration: const BoxDecoration(
-                      gradient: _fallbackGradient,
-                    ),
-                    child: const Center(
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: AppColors.primary,
-                      ),
-                    ),
-                  );
-                },
               ),
 
               // ─── Deep gradient overlay (left: #0F0F13, right: transparent)
@@ -609,14 +580,14 @@ class _DotIndicator extends StatelessWidget {
 
 List<Map<String, dynamic>> _buildCategories(AppLocalizations l10n) {
   return [
-    {'icon': Icons.plumbing_rounded, 'label': l10n.categoryPlumber, 'color': const Color(0xFF3B82F6)},
-    {'icon': Icons.ac_unit_rounded, 'label': l10n.categoryAcRepair, 'color': const Color(0xFF06B6D4)},
-    {'icon': Icons.electrical_services_rounded, 'label': l10n.categoryElectrician, 'color': const Color(0xFFF59E0B)},
-    {'icon': Icons.format_paint_rounded, 'label': l10n.categoryPainter, 'color': const Color(0xFFEF4444)},
-    {'icon': Icons.cleaning_services_rounded, 'label': l10n.categoryCleaning, 'color': const Color(0xFF22C55E)},
-    {'icon': Icons.carpenter_rounded, 'label': l10n.categoryCarpenter, 'color': const Color(0xFF8B5CF6)},
-    {'icon': Icons.local_shipping_rounded, 'label': l10n.categoryMovers, 'color': const Color(0xFFEC4899)},
-    {'icon': Icons.home_repair_service_rounded, 'label': l10n.categoryAppliance, 'color': const Color(0xFF14B8A6)},
+    {'icon': Icons.plumbing_rounded, 'label': l10n.categoryPlumber, 'color': const Color(0xFF3B82F6), 'image': 'lib/assets/images/plumbing solution.png'},
+    {'icon': Icons.ac_unit_rounded, 'label': l10n.categoryAcRepair, 'color': const Color(0xFF06B6D4), 'image': 'lib/assets/images/ac repair.png'},
+    {'icon': Icons.electrical_services_rounded, 'label': l10n.categoryElectrician, 'color': const Color(0xFFF59E0B), 'image': 'lib/assets/images/electrician working pic.png'},
+    {'icon': Icons.format_paint_rounded, 'label': l10n.categoryPainter, 'color': const Color(0xFFEF4444), 'image': 'lib/assets/images/painting and decor.png'},
+    {'icon': Icons.cleaning_services_rounded, 'label': l10n.categoryCleaning, 'color': const Color(0xFF22C55E), 'image': 'lib/assets/images/home cleaning.png'},
+    {'icon': Icons.carpenter_rounded, 'label': l10n.categoryCarpenter, 'color': const Color(0xFF8B5CF6), 'image': 'lib/assets/images/curpentry and furniture.png'},
+    {'icon': Icons.local_shipping_rounded, 'label': l10n.categoryMovers, 'color': const Color(0xFFEC4899), 'image': 'lib/assets/images/packers and movers.png'},
+    {'icon': Icons.home_repair_service_rounded, 'label': l10n.categoryAppliance, 'color': const Color(0xFF14B8A6), 'image': 'lib/assets/images/appliance repair.png'},
   ];
 }
 
@@ -686,21 +657,22 @@ class _CategoryCard extends StatelessWidget {
   final IconData icon;
   final String label;
   final Color color;
+  final String? image;
 
   const _CategoryCard({
     required this.icon,
     required this.label,
     required this.color,
+    this.image,
   });
 
   @override
   Widget build(BuildContext context) {
     final colors = AppColorsResolved.of(context);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return GestureDetector(
-      onTap: () {
-        // TODO: Navigate to category detail / listing
-      },
+      onTap: () => context.push('/explore', extra: label),
       child: SizedBox(
         width: 80,
         child: Column(
@@ -709,14 +681,52 @@ class _CategoryCard extends StatelessWidget {
               width: 64,
               height: 64,
               decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(18),
                 border: Border.all(
-                  color: color.withValues(alpha: 0.15),
+                  color: color.withValues(alpha: isDark ? 0.35 : 0.2),
                   width: 1.5,
                 ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: isDark ? 0.25 : 0.08),
+                    blurRadius: 8,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
               ),
-              child: Icon(icon, color: color, size: 28),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: image != null
+                    ? Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          Image.asset(
+                            image!,
+                            fit: BoxFit.cover,
+                          ),
+                          // Dark gradient overlay for text and icon readability
+                          Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  Colors.black.withValues(alpha: 0.15),
+                                  Colors.black.withValues(alpha: 0.60),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Center(
+                            child: Icon(icon, color: Colors.white, size: 24),
+                          ),
+                        ],
+                      )
+                    : Container(
+                        color: color.withValues(alpha: 0.1),
+                        child: Icon(icon, color: color, size: 28),
+                      ),
+              ),
             ),
             const SizedBox(height: 8),
             Text(
@@ -817,15 +827,25 @@ class _ProfessionalCard extends StatelessWidget {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(16),
                       child: avatarUrl != null
-                          ? Image.network(
-                              avatarUrl!,
-                              fit: BoxFit.cover,
-                              errorBuilder: (_, __, ___) => Icon(
-                                Icons.person_rounded,
-                                color: avatarColor,
-                                size: 28,
-                              ),
-                            )
+                          ? (avatarUrl!.startsWith('http')
+                              ? Image.network(
+                                  avatarUrl!,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (_, __, ___) => Icon(
+                                    Icons.person_rounded,
+                                    color: avatarColor,
+                                    size: 28,
+                                  ),
+                                )
+                              : Image.asset(
+                                  avatarUrl!,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (_, __, ___) => Icon(
+                                    Icons.person_rounded,
+                                    color: avatarColor,
+                                    size: 28,
+                                  ),
+                                ))
                           : Icon(
                               Icons.person_rounded,
                               color: avatarColor,

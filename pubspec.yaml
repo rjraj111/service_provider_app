@@ -48,7 +48,5 @@ dev_dependencies:
 flutter:
   generate: true
   uses-material-design: true
-  # assets:
-  #   - assets/images/
-  #   - assets/icons/
-  #   - assets/animations/
+  assets:
+    - lib/assets/images/

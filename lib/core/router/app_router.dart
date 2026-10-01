@@ -12,6 +12,7 @@ import '../../features/tracking/live_tracking_screen.dart';
 import '../../features/chat/chat_screen.dart';
 import '../../features/provider_dashboard/provider_dashboard_screen.dart';
 import '../../features/notifications/notifications_screen.dart';
+import '../../features/explore/explore_services_screen.dart';
 
 /// Provides the app-wide GoRouter instance via Riverpod.
 final appRouterProvider = Provider<GoRouter>((ref) {
@@ -110,6 +111,16 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/notifications',
         builder: (context, state) => const NotificationsScreen(),
+      ),
+      GoRoute(
+        path: '/explore',
+        builder: (context, state) {
+          final extra = state.extra;
+          if (extra is String) {
+            return ExploreServicesScreen(initialQuery: extra);
+          }
+          return const ExploreServicesScreen();
+        },
       ),
     ],
   );

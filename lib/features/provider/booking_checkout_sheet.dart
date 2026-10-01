@@ -376,15 +376,25 @@ class _BookingCheckoutSheetState extends State<BookingCheckoutSheet> {
             ),
             child: ClipOval(
               child: widget.avatarUrl != null
-                  ? Image.network(
-                      widget.avatarUrl!,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => Icon(
-                        Icons.person_rounded,
-                        color: widget.avatarColor,
-                        size: 26,
-                      ),
-                    )
+                  ? (widget.avatarUrl!.startsWith('http')
+                      ? Image.network(
+                          widget.avatarUrl!,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => Icon(
+                            Icons.person_rounded,
+                            color: widget.avatarColor,
+                            size: 26,
+                          ),
+                        )
+                      : Image.asset(
+                          widget.avatarUrl!,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => Icon(
+                            Icons.person_rounded,
+                            color: widget.avatarColor,
+                            size: 26,
+                          ),
+                        ))
                   : Icon(
                       Icons.person_rounded,
                       color: widget.avatarColor,

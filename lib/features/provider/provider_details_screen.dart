@@ -490,23 +490,15 @@ class _CoverAndProfileHeader extends StatelessWidget {
           child: Stack(
             fit: StackFit.expand,
             children: [
-              Image.network(
-                coverUrl,
-                fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => Container(
-                  decoration: const BoxDecoration(
-                    gradient: AppColors.primaryGradient,
-                  ),
-                ),
-                loadingBuilder: (_, child, progress) {
-                  if (progress == null) return child;
-                  return Container(
-                    decoration: const BoxDecoration(
-                      gradient: AppColors.primaryGradient,
+              coverUrl.startsWith('http')
+                  ? Image.network(
+                      coverUrl,
+                      fit: BoxFit.cover,
+                    )
+                  : Image.asset(
+                      coverUrl,
+                      fit: BoxFit.cover,
                     ),
-                  );
-                },
-              ),
               // Top & bottom gradients for buttons and contrast
               Container(
                 decoration: BoxDecoration(
@@ -749,23 +741,41 @@ class _CoverAndProfileHeader extends StatelessWidget {
                   ],
                 ),
                 child: ClipOval(
-                  child: Image.network(
-                    avatarUrl,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => Container(
-                      color: avatarColor,
-                      child: Center(
-                        child: Text(
-                          name.split(' ').map((e) => e.isNotEmpty ? e[0] : '').take(2).join(),
-                          style: const TextStyle(
-                            fontSize: 28,
-                            fontWeight: FontWeight.w800,
-                            color: Colors.white,
+                  child: avatarUrl.startsWith('http')
+                      ? Image.network(
+                          avatarUrl,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => Container(
+                            color: avatarColor,
+                            child: Center(
+                              child: Text(
+                                name.split(' ').map((e) => e.isNotEmpty ? e[0] : '').take(2).join(),
+                                style: const TextStyle(
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.w800,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+                      : Image.asset(
+                          avatarUrl,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => Container(
+                            color: avatarColor,
+                            child: Center(
+                              child: Text(
+                                name.split(' ').map((e) => e.isNotEmpty ? e[0] : '').take(2).join(),
+                                style: const TextStyle(
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.w800,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                  ),
                 ),
               ),
 
@@ -1632,17 +1642,35 @@ String _getDefaultAvatarFor(String name) {
 String _getCoverFor(String service) {
   final s = service.toLowerCase();
   if (s.contains('plumb')) {
-    return 'https://images.unsplash.com/photo-1585771724684-38269d6639fd?auto=format&fit=crop&q=80&w=1200';
+    return 'lib/assets/images/plumbing solution.png';
   } else if (s.contains('ac') || s.contains('hvac')) {
-    return 'https://images.unsplash.com/photo-1621905252507-b354bc25edac?auto=format&fit=crop&q=80&w=1200';
+    return 'lib/assets/images/ac repair.png';
   } else if (s.contains('electr')) {
-    return 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&q=80&w=1200';
+    return 'lib/assets/images/electrician working pic.png';
   } else if (s.contains('paint')) {
-    return 'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?auto=format&fit=crop&q=80&w=1200';
+    return 'lib/assets/images/painting and decor.png';
   } else if (s.contains('carp')) {
-    return 'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?auto=format&fit=crop&q=80&w=1200';
+    return 'lib/assets/images/curpentry and furniture.png';
+  } else if (s.contains('clean')) {
+    return 'lib/assets/images/home cleaning.png';
+  } else if (s.contains('car') || s.contains('wash')) {
+    return 'lib/assets/images/car wash.png';
+  } else if (s.contains('pest')) {
+    return 'lib/assets/images/pest control services.png';
+  } else if (s.contains('salon') || s.contains('spa')) {
+    return 'lib/assets/images/salon and spa.png';
+  } else if (s.contains('groom')) {
+    return 'lib/assets/images/mens groaming.png';
+  } else if (s.contains('cctv') || s.contains('smart')) {
+    return 'lib/assets/images/smart home and cctv.png';
+  } else if (s.contains('mover') || s.contains('pack')) {
+    return 'lib/assets/images/packers and movers.png';
+  } else if (s.contains('laundry')) {
+    return 'lib/assets/images/laundry and dry wash.png';
+  } else if (s.contains('appliance')) {
+    return 'lib/assets/images/appliance repair.png';
   }
-  return 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&q=80&w=1200';
+  return 'lib/assets/images/home cleaning.png';
 }
 
 String _getBioFor(String name, String service) {
