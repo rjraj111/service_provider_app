@@ -7,6 +7,7 @@ import '../../features/home/home_screen.dart';
 import '../../features/video_feed/video_feed_screen.dart';
 import '../../features/profile/profile_screen.dart';
 import '../../features/provider/provider_details_screen.dart';
+import '../../features/search/ai_search_screen.dart';
 
 /// Provides the app-wide GoRouter instance via Riverpod.
 final appRouterProvider = Provider<GoRouter>((ref) {
@@ -54,6 +55,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           }
           return const ProviderDetailsScreen();
         },
+      ),
+      GoRoute(
+        path: '/ai-search',
+        builder: (context, state) => const AiSearchScreen(),
       ),
     ],
   );
