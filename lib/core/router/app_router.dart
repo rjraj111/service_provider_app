@@ -17,6 +17,7 @@ import '../../features/explore/explore_services_screen.dart';
 import '../../features/auth/splash_screen.dart';
 import '../../features/auth/login_screen.dart';
 import '../../features/auth/otp_verification_screen.dart';
+import '../../features/checkout/secure_checkout_screen.dart';
 
 /// Provides the app-wide GoRouter instance via Riverpod.
 final appRouterProvider = Provider<GoRouter>((ref) {
@@ -161,6 +162,24 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/provider-kyc',
         builder: (context, state) => const ProviderKycScreen(),
+      ),
+      GoRoute(
+        path: '/checkout',
+        builder: (context, state) {
+          final extra = state.extra;
+          if (extra is Map<String, dynamic>) {
+            return SecureCheckoutScreen(
+              serviceName: extra['serviceName'] as String? ?? 'Master AC Servicing',
+              providerName: extra['providerName'] as String? ?? 'Rahim Uddin',
+              providerRating: (extra['providerRating'] as num?)?.toDouble() ?? 4.9,
+              serviceFee: extra['serviceFee'] as int? ?? 500,
+              platformFee: extra['platformFee'] as int? ?? 20,
+              dateTime: extra['dateTime'] as String? ?? 'Tomorrow, 10:00 AM - 11:30 AM',
+              address: extra['address'] as String? ?? 'House 14, Road 71, Gulshan 2, Dhaka',
+            );
+          }
+          return const SecureCheckoutScreen();
+        },
       ),
       GoRoute(
         path: '/notifications',
