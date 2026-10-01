@@ -660,6 +660,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   behavior: SnackBarBehavior.floating,
                 ),
               );
+              context.go('/login');
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.error,

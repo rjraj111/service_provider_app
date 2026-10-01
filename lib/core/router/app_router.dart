@@ -13,12 +13,61 @@ import '../../features/chat/chat_screen.dart';
 import '../../features/provider_dashboard/provider_dashboard_screen.dart';
 import '../../features/notifications/notifications_screen.dart';
 import '../../features/explore/explore_services_screen.dart';
+import '../../features/auth/splash_screen.dart';
+import '../../features/auth/login_screen.dart';
+import '../../features/auth/otp_verification_screen.dart';
 
 /// Provides the app-wide GoRouter instance via Riverpod.
 final appRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
-    initialLocation: '/home',
+    initialLocation: '/splash',
     routes: [
+      GoRoute(
+        path: '/splash',
+        pageBuilder: (context, state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: const SplashScreen(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+        ),
+      ),
+      GoRoute(
+        path: '/login',
+        pageBuilder: (context, state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: const LoginScreen(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+        ),
+      ),
+      GoRoute(
+        path: '/otp',
+        pageBuilder: (context, state) {
+          final phone = (state.extra as String?) ??
+              state.uri.queryParameters['phone'] ??
+              '+880 1712 345 678';
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child: OtpVerificationScreen(phoneNumber: phone),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return SlideTransition(
+                position: Tween<Offset>(
+                  begin: const Offset(1, 0),
+                  end: Offset.zero,
+                ).animate(
+                  CurvedAnimation(
+                    parent: animation,
+                    curve: Curves.easeOutCubic,
+                  ),
+                ),
+                child: child,
+              );
+            },
+          );
+        },
+      ),
       ShellRoute(
         builder: (context, state, child) => MainShell(child: child),
         routes: [
