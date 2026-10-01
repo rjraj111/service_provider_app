@@ -698,6 +698,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             // ─── 3. Active Booking Spotlight Banner ─────────────────────────
             _buildActiveBookingBanner(colors),
 
+            const SizedBox(height: 20),
+
+            // ─── 3.5 Switch to Provider Mode Hero Banner ────────────────────
+            _buildSwitchToProviderBanner(colors),
+
             const SizedBox(height: 24),
 
             // ─── 4. Account & Activity Section ──────────────────────────────
@@ -706,6 +711,17 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             _buildMenuContainer(
               colors: colors,
               items: [
+                _MenuItemData(
+                  icon: Icons.storefront_rounded,
+                  iconColor: const Color(0xFF8B5CF6),
+                  title: 'Switch to Provider Mode',
+                  subtitle: 'Earn money offering plumbing, repair & cleaning',
+                  badgeText: 'Driver Mode',
+                  badgeColor: const Color(0xFF8B5CF6),
+                  onTap: () {
+                    context.push('/provider-dashboard');
+                  },
+                ),
                 _MenuItemData(
                   icon: Icons.calendar_month_rounded,
                   iconColor: const Color(0xFF3B82F6),
@@ -1273,6 +1289,180 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             ],
           ),
         ],
+      ),
+    );
+  }
+
+  // ─── Switch to Provider Mode Banner ────────────────────────────────────────
+
+  Widget _buildSwitchToProviderBanner(AppColorsResolved colors) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [
+            Color(0xFF1E1B4B),
+            Color(0xFF312E81),
+            Color(0xFF4338CA),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(22),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF312E81).withValues(alpha: 0.35),
+            blurRadius: 16,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            HapticFeedback.lightImpact();
+            context.push('/provider-dashboard');
+          },
+          borderRadius: BorderRadius.circular(22),
+          child: Padding(
+            padding: const EdgeInsets.all(18),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            width: 7,
+                            height: 7,
+                            decoration: const BoxDecoration(
+                              color: Color(0xFF4ADE80),
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          const Text(
+                            'PARTNER / DRIVER MODE',
+                            style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w800,
+                              color: Colors.white,
+                              letterSpacing: 0.6,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: AppColors.accent,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Text(
+                        'EARN ৳50K+/MO',
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w900,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 14),
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: Colors.white.withValues(alpha: 0.25)),
+                      ),
+                      child: const Icon(
+                        Icons.storefront_rounded,
+                        color: Colors.white,
+                        size: 26,
+                      ),
+                    ),
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Switch to Provider Mode',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w900,
+                              color: Colors.white,
+                              letterSpacing: -0.2,
+                            ),
+                          ),
+                          const SizedBox(height: 3),
+                          Text(
+                            'Accept live requests, track earnings & manage orders like Uber / Fiverr.',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.white.withValues(alpha: 0.82),
+                              height: 1.3,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(14),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.1),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Open Provider Dashboard',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w800,
+                          color: Color(0xFF1E1B4B),
+                        ),
+                      ),
+                      SizedBox(width: 6),
+                      Icon(
+                        Icons.arrow_forward_rounded,
+                        size: 16,
+                        color: Color(0xFF1E1B4B),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
