@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../../l10n/app_localizations.dart';
@@ -158,10 +159,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       child: IconButton(
                         onPressed: () {},
-                        icon: Badge(
+                        icon: const Badge(
                           smallSize: 8,
                           backgroundColor: AppColors.error,
-                          child: const Icon(Icons.notifications_outlined),
+                          child: Icon(Icons.notifications_outlined),
                         ),
                         color: colors.textPrimary,
                       ),
@@ -278,7 +279,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       onPressed: () {},
                       child: Text(
                         l10n.seeAll,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
                           color: AppColors.primary,
@@ -330,7 +331,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       onPressed: () {},
                       child: Text(
                         l10n.seeAll,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
                           color: AppColors.primary,
@@ -358,6 +359,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     rate: pro['rate'] as String,
                     avatarColor: pro['avatarColor'] as Color,
                     isAvailable: pro['isAvailable'] as bool,
+                    avatarUrl: pro['avatarUrl'] as String?,
                     l10n: l10n,
                   );
                 },
@@ -602,6 +604,7 @@ final List<Map<String, dynamic>> _professionals = [
     'rate': '৳500/hr',
     'avatarColor': const Color(0xFF3B82F6),
     'isAvailable': true,
+    'avatarUrl': 'https://images.unsplash.com/photo-1540569014015-19a7be504e3a?auto=format&fit=crop&q=80&w=400',
   },
   {
     'name': 'Kamal Hossain',
@@ -611,6 +614,7 @@ final List<Map<String, dynamic>> _professionals = [
     'rate': '৳800/visit',
     'avatarColor': const Color(0xFF06B6D4),
     'isAvailable': true,
+    'avatarUrl': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400',
   },
   {
     'name': 'Arif Khan',
@@ -620,6 +624,7 @@ final List<Map<String, dynamic>> _professionals = [
     'rate': '৳450/hr',
     'avatarColor': const Color(0xFFF59E0B),
     'isAvailable': false,
+    'avatarUrl': 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=400',
   },
   {
     'name': 'Sumon Das',
@@ -629,6 +634,7 @@ final List<Map<String, dynamic>> _professionals = [
     'rate': '৳600/hr',
     'avatarColor': const Color(0xFFEF4444),
     'isAvailable': true,
+    'avatarUrl': 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=400',
   },
   {
     'name': 'Nasir Ahmed',
@@ -638,6 +644,7 @@ final List<Map<String, dynamic>> _professionals = [
     'rate': '৳700/hr',
     'avatarColor': const Color(0xFF8B5CF6),
     'isAvailable': true,
+    'avatarUrl': 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=400',
   },
 ];
 
@@ -708,6 +715,7 @@ class _ProfessionalCard extends StatelessWidget {
   final String rate;
   final Color avatarColor;
   final bool isAvailable;
+  final String? avatarUrl;
   final AppLocalizations l10n;
 
   const _ProfessionalCard({
@@ -718,6 +726,7 @@ class _ProfessionalCard extends StatelessWidget {
     required this.rate,
     required this.avatarColor,
     required this.isAvailable,
+    this.avatarUrl,
     required this.l10n,
   });
 
@@ -725,142 +734,178 @@ class _ProfessionalCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = AppColorsResolved.of(context);
 
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: colors.surface,
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () {
+          context.push(
+            '/provider-details',
+            extra: {
+              'name': name,
+              'service': service,
+              'rating': rating,
+              'reviews': reviews,
+              'rate': rate,
+              'avatarColor': avatarColor,
+              'isAvailable': isAvailable,
+              'avatarUrl': avatarUrl,
+            },
+          );
+        },
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: colors.border, width: 1),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 12,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          // Avatar
-          Stack(
-            children: [
-              Container(
-                width: 56,
-                height: 56,
-                decoration: BoxDecoration(
-                  color: avatarColor.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Icon(
-                  Icons.person_rounded,
-                  color: avatarColor,
-                  size: 28,
-                ),
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: colors.surface,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: colors.border, width: 1),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.04),
+                blurRadius: 12,
+                offset: const Offset(0, 2),
               ),
-              // Online indicator
-              if (isAvailable)
-                Positioned(
-                  right: 0,
-                  bottom: 0,
-                  child: Container(
-                    width: 14,
-                    height: 14,
-                    decoration: BoxDecoration(
-                      color: AppColors.success,
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                          color: colors.surface, width: 2),
-                    ),
-                  ),
-                ),
             ],
           ),
-          const SizedBox(width: 14),
+          child: Row(
+            children: [
+              // Avatar
+              Stack(
+                children: [
+                  Container(
+                    width: 56,
+                    height: 56,
+                    decoration: BoxDecoration(
+                      color: avatarColor.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(16),
+                      child: avatarUrl != null
+                          ? Image.network(
+                              avatarUrl!,
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, __, ___) => Icon(
+                                Icons.person_rounded,
+                                color: avatarColor,
+                                size: 28,
+                              ),
+                            )
+                          : Icon(
+                              Icons.person_rounded,
+                              color: avatarColor,
+                              size: 28,
+                            ),
+                    ),
+                  ),
+                  // Online indicator
+                  if (isAvailable)
+                    Positioned(
+                      right: 0,
+                      bottom: 0,
+                      child: Container(
+                        width: 14,
+                        height: 14,
+                        decoration: BoxDecoration(
+                          color: AppColors.success,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: colors.surface,
+                            width: 2,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+              const SizedBox(width: 14),
 
-          // Info
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  name,
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                    color: colors.textPrimary,
-                  ),
-                ),
-                const SizedBox(height: 3),
-                Text(
-                  service,
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: colors.textSecondary,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Row(
+              // Info
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Icon(Icons.star_rounded,
-                        color: Color(0xFFFBBF24), size: 16),
-                    const SizedBox(width: 3),
                     Text(
-                      rating.toString(),
+                      name,
                       style: TextStyle(
-                        fontSize: 13,
+                        fontSize: 15,
                         fontWeight: FontWeight.w700,
                         color: colors.textPrimary,
                       ),
                     ),
-                    const SizedBox(width: 4),
+                    const SizedBox(height: 3),
                     Text(
-                      '(${l10n.reviews(reviews)})',
+                      service,
                       style: TextStyle(
-                        fontSize: 12,
-                        color: colors.textHint,
+                        fontSize: 13,
+                        color: colors.textSecondary,
+                        fontWeight: FontWeight.w500,
                       ),
+                    ),
+                    const SizedBox(height: 6),
+                    Row(
+                      children: [
+                        const Icon(Icons.star_rounded,
+                            color: Color(0xFFFBBF24), size: 16),
+                        const SizedBox(width: 3),
+                        Text(
+                          rating.toString(),
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w700,
+                            color: colors.textPrimary,
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          '(${l10n.reviews(reviews)})',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: colors.textHint,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ],
-            ),
-          ),
-
-          // Price & availability
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                rate,
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.primary,
-                ),
               ),
-              const SizedBox(height: 6),
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: isAvailable
-                      ? AppColors.success.withValues(alpha: 0.1)
-                      : colors.textHint.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Text(
-                  isAvailable ? l10n.available : l10n.busy,
-                  style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w600,
-                    color: isAvailable ? AppColors.success : colors.textHint,
+
+              // Price & availability
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    rate,
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.primary,
+                    ),
                   ),
-                ),
+                  const SizedBox(height: 6),
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: isAvailable
+                          ? AppColors.success.withValues(alpha: 0.1)
+                          : colors.textHint.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      isAvailable ? l10n.available : l10n.busy,
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        color: isAvailable ? AppColors.success : colors.textHint,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
-        ],
+        ),
       ),
     );
   }
