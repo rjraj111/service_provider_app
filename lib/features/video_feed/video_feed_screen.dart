@@ -1,7 +1,6 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../core/theme/app_colors.dart';
 
@@ -177,13 +176,13 @@ class _TopBar extends StatelessWidget {
           ],
         ),
       ),
-      child: Row(
+      child: const Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           _TopBarTab(label: 'Following', isActive: false),
-          const SizedBox(width: 24),
+          SizedBox(width: 24),
           _TopBarTab(label: 'For You', isActive: true),
-          const SizedBox(width: 24),
+          SizedBox(width: 24),
           _TopBarTab(label: 'Trending', isActive: false),
         ],
       ),
@@ -589,7 +588,7 @@ class _ProfileAvatar extends StatelessWidget {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(color: Colors.white, width: 2),
-                gradient: LinearGradient(
+                gradient: const LinearGradient(
                   colors: [
                     AppColors.primary,
                     AppColors.primaryLight,
@@ -885,7 +884,7 @@ class _BottomInfo extends StatelessWidget {
             const SizedBox(width: 12),
 
             // ─── Book Now Button ────────────────────────────────
-            _BookNowButton(),
+            _BookNowButton(video: video),
           ],
         ),
       ],
@@ -896,6 +895,10 @@ class _BottomInfo extends StatelessWidget {
 // ─── Book Now Button ────────────────────────────────────────────────────────
 
 class _BookNowButton extends StatefulWidget {
+  final _VideoPost? video;
+
+  const _BookNowButton({this.video});
+
   @override
   State<_BookNowButton> createState() => _BookNowButtonState();
 }
@@ -921,56 +924,76 @@ class _BookNowButtonState extends State<_BookNowButton>
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        HapticFeedback.mediumImpact();
-      },
-      child: AnimatedBuilder(
-        listenable: _shimmerController,
-        builder: (context, child) {
-          return Container(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  AppColors.primary,
-                  AppColors.primaryLight,
-                  AppColors.primary,
-                ],
-                stops: [
-                  0.0,
-                  _shimmerController.value,
-                  1.0,
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () {
+          HapticFeedback.mediumImpact();
+          final video = widget.video;
+          if (video != null) {
+            context.push(
+              '/provider-details',
+              extra: {
+                'name': video.providerName,
+                'service': '${video.service} · Experienced Pro',
+                'rating': 4.9,
+                'reviews': 120,
+                'rate': '৳500/hr',
+                'isAvailable': true,
+              },
+            );
+          } else {
+            context.push('/provider-details');
+          }
+        },
+        borderRadius: BorderRadius.circular(20),
+        child: AnimatedBuilder(
+          listenable: _shimmerController,
+          builder: (context, child) {
+            return Container(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: const [
+                    AppColors.primary,
+                    AppColors.primaryLight,
+                    AppColors.primary,
+                  ],
+                  stops: [
+                    0.0,
+                    _shimmerController.value,
+                    1.0,
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.primary.withValues(alpha: 0.4),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  ),
                 ],
               ),
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.primary.withValues(alpha: 0.4),
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
-            child: const Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.calendar_today_rounded,
-                    color: Colors.white, size: 14),
-                SizedBox(width: 6),
-                Text(
-                  'Book Now',
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
+              child: const Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.calendar_today_rounded,
+                      color: Colors.white, size: 14),
+                  SizedBox(width: 6),
+                  Text(
+                    'Book Now',
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
                   ),
-                ),
-              ],
-            ),
-          );
-        },
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }
