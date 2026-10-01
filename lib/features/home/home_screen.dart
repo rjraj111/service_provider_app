@@ -158,13 +158,19 @@ class _HomeScreenState extends State<HomeScreen> {
                         ],
                       ),
                       child: IconButton(
-                        onPressed: () {},
-                        icon: const Badge(
-                          smallSize: 8,
+                        onPressed: () => context.push('/notifications'),
+                        icon: Badge.count(
+                          count: 3,
                           backgroundColor: AppColors.error,
-                          child: Icon(Icons.notifications_outlined),
+                          textColor: Colors.white,
+                          textStyle: const TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w800,
+                          ),
+                          child: const Icon(Icons.notifications_outlined),
                         ),
                         color: colors.textPrimary,
+                        tooltip: 'Notifications',
                       ),
                     ),
                   ],

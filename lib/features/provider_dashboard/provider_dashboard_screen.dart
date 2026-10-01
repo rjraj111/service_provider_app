@@ -383,6 +383,21 @@ class _ProviderDashboardScreenState extends State<ProviderDashboardScreen>
         ],
       ),
       actions: [
+        IconButton(
+          onPressed: () => context.push('/notifications'),
+          icon: Badge.count(
+            count: 3,
+            backgroundColor: AppColors.error,
+            textColor: Colors.white,
+            textStyle: const TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w800,
+            ),
+            child: const Icon(Icons.notifications_outlined),
+          ),
+          color: colors.textPrimary,
+          tooltip: 'Notifications',
+        ),
         Center(
           child: Container(
             margin: const EdgeInsets.symmetric(vertical: 8),
