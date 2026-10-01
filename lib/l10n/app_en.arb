@@ -93,7 +93,7 @@
   "logOut": "Log Out",
   "@logOut": { "description": "Logout button" },
 
-  "appName": "ServiceHub",
+  "appName": "Utsho",
   "@appName": { "description": "Application name" },
 
   "perHour": "/hr",

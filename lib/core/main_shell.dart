@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:service_hub/core/theme/app_colors.dart';
-import 'package:service_hub/l10n/app_localizations.dart';
+import 'theme/app_colors.dart';
+import '../l10n/app_localizations.dart';
 
 class MainShell extends StatelessWidget {
   final Widget child;

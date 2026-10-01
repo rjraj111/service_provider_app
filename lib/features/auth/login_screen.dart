@@ -272,7 +272,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             const SizedBox(width: 12),
                             Text(
-                              'ServiceHub',
+                              'Utsho',
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w800,

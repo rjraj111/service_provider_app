@@ -20,7 +20,7 @@ class ProfileScreen extends ConsumerStatefulWidget {
 
 class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   String _userName = 'Jahedul Islam';
-  String _userEmail = 'jahedul.islam@servicehub.com';
+  String _userEmail = 'jahedul.islam@utsho.com';
   String _userPhone = '+880 1812-345678';
   String _userAddress = 'Home - Chittagong (GEC Circle, Nasirabad)';
   final int _totalBookings = 12;
@@ -642,7 +642,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           ],
         ),
         content: Text(
-          'Are you sure you want to sign out from your ServiceHub account on this device?',
+          'Are you sure you want to sign out from your Utsho account on this device?',
           style: TextStyle(color: colors.textSecondary, fontSize: 13.5, height: 1.4),
         ),
         actions: [
@@ -843,7 +843,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             // App Version Footer
             Center(
               child: Text(
-                'ServiceHub Enterprise v2.4.0 (Build 880)\nSecured with End-to-End Encryption',
+                'Utsho Enterprise v2.4.0 (Build 880)\nSecured with End-to-End Encryption',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 11,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// Centralized color palette for the ServiceHub app.
+/// Centralized color palette for the Utsho app.
 class AppColors {
   AppColors._(); // Prevent instantiation
 

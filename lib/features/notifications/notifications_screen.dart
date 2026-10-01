@@ -71,7 +71,7 @@ class NotificationItem {
   }
 }
 
-/// A clean, modern, and interactive Notification Center for ServiceHub.
+/// A clean, modern, and interactive Notification Center for Utsho.
 /// Features notification grouping, unread badges, filter tabs, swipe-to-dismiss,
 /// and contextual actions for bookings, promos, and security alerts.
 class NotificationsScreen extends StatefulWidget {
@@ -111,7 +111,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       id: 'notif-3',
       title: 'New login detected on Windows PC',
       message:
-          'Your ServiceHub account was logged in from Google Chrome on Windows 11 (IP: 103.114.98.22, Dhaka). If this wasn\'t you, tap to secure your account immediately.',
+          'Your Utsho account was logged in from Google Chrome on Windows 11 (IP: 103.114.98.22, Dhaka). If this wasn\'t you, tap to secure your account immediately.',
       timestamp: '2 hours ago',
       type: NotificationType.systemAlert,
       isRead: false,

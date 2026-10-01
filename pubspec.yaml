@@ -1,5 +1,5 @@
-name: service_hub
-description: A local service provider platform connecting users with technicians and professionals.
+name: utsho
+description: Utsho - A local service provider platform connecting users with technicians and professionals.
 publish_to: 'none'
 version: 1.0.0+1
 environment:

@@ -44,7 +44,7 @@ class ServiceProviderApp extends ConsumerWidget {
     );
 
     return MaterialApp.router(
-      title: 'ServiceHub',
+      title: 'Utsho',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,

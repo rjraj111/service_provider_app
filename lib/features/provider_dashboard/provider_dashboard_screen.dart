@@ -1531,7 +1531,7 @@ class _ProviderDashboardScreenState extends State<ProviderDashboardScreen>
           Divider(color: colors.border, height: 16),
           _buildToolkitTile(
             icon: Icons.shield_rounded,
-            title: 'ServiceHub Partner Insurance',
+            title: 'Utsho Partner Insurance',
             subtitle: '৳50,000 Safety Shield active',
             colors: colors,
           ),

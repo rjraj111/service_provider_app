@@ -149,7 +149,7 @@ class _SecureCheckoutScreenState extends State<SecureCheckoutScreen> {
 
                 // Escrow explanation
                 Text(
-                  '৳$_totalAmount has been transferred to the ServiceHub Escrow Vault. Funds will only be released to ${widget.providerName} after you verify the job is 100% completed.',
+                  '৳$_totalAmount has been transferred to the Utsho Escrow Vault. Funds will only be released to ${widget.providerName} after you verify the job is 100% completed.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 13.5,
@@ -625,7 +625,7 @@ class _SecureCheckoutScreenState extends State<SecureCheckoutScreen> {
                         Row(
                           children: [
                             Text(
-                              'ServiceHub Escrow Vault',
+                              'Utsho Escrow Vault',
                               style: TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w800,

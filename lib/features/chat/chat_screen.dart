@@ -537,7 +537,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
           onPressed: () {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
-                content: Text('Technician verified & insured by ServiceHub Safety Shield.'),
+                content: Text('Technician verified & insured by Utsho Safety Shield.'),
                 behavior: SnackBarBehavior.floating,
                 duration: Duration(seconds: 2),
               ),

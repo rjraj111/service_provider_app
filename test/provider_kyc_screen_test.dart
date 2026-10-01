@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
-import 'package:service_hub/features/provider_dashboard/provider_dashboard_screen.dart';
-import 'package:service_hub/features/provider_dashboard/provider_kyc_screen.dart';
+import 'package:utsho/features/provider_dashboard/provider_dashboard_screen.dart';
+import 'package:utsho/features/provider_dashboard/provider_kyc_screen.dart';
 
 void main() {
   testWidgets('ProviderKycScreen renders all key elements and submits successfully',

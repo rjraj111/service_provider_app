@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
-import 'package:service_hub/features/checkout/secure_checkout_screen.dart';
+import 'package:utsho/features/checkout/secure_checkout_screen.dart';
 
 void main() {
   testWidgets(

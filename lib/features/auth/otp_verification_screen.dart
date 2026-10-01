@@ -549,7 +549,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen>
                                         ),
                                         const SizedBox(height: 2),
                                         Text(
-                                          'Never share this code with anyone. ServiceHub staff will never ask for your verification PIN.',
+                                          'Never share this code with anyone. Utsho staff will never ask for your verification PIN.',
                                           style: TextStyle(
                                             fontSize: 11.5,
                                             height: 1.4,

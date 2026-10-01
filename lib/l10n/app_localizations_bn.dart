@@ -98,7 +98,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get logOut => 'লগ আউট';
 
   @override
-  String get appName => 'সার্ভিসহাব';
+  String get appName => 'উৎস';
 
   @override
   String get perHour => '/ঘন্টা';

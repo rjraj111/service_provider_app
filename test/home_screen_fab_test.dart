@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:service_hub/features/home/home_screen.dart';
-import 'package:service_hub/l10n/app_localizations.dart';
+import 'package:utsho/features/home/home_screen.dart';
+import 'package:utsho/l10n/app_localizations.dart';
 
 void main() {
   testWidgets('HomeScreen displays FloatingActionButton and opens ReviewBottomSheet',

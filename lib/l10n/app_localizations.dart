@@ -275,7 +275,7 @@ abstract class AppLocalizations {
   /// Application name
   ///
   /// In en, this message translates to:
-  /// **'ServiceHub'**
+  /// **'Utsho'**
   String get appName;
 
   /// Per hour rate suffix

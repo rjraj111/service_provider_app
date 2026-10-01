@@ -327,7 +327,7 @@ class _ReviewBottomSheetState extends State<ReviewBottomSheet> {
                       ),
                       const SizedBox(width: 5),
                       Text(
-                        'Verified ServiceHub Review · 100% Transparent',
+                        'Verified Utsho Review · 100% Transparent',
                         style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.w600,

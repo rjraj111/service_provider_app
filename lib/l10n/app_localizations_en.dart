@@ -98,7 +98,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get logOut => 'Log Out';
 
   @override
-  String get appName => 'ServiceHub';
+  String get appName => 'Utsho';
 
   @override
   String get perHour => '/hr';

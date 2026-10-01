@@ -113,7 +113,7 @@ class _BookingCheckoutSheetState extends State<BookingCheckoutSheet> {
 
   void _applyPromo() {
     final code = _promoController.text.trim().toUpperCase();
-    if (code == 'PATHAO50' || code == 'DARAZ50' || code == 'SERVICE50' || code.isNotEmpty) {
+    if (code == 'UTSHO50' || code == 'PATHAO50' || code == 'DARAZ50' || code == 'SERVICE50' || code.isNotEmpty) {
       setState(() => _isPromoApplied = true);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -229,7 +229,7 @@ class _BookingCheckoutSheetState extends State<BookingCheckoutSheet> {
                             ),
                           ),
                           Text(
-                            'Pathao Express & Daraz Guaranteed',
+                            'Utsho Express Guaranteed',
                             style: TextStyle(
                               fontSize: 12,
                               color: colors.textSecondary,
@@ -328,7 +328,7 @@ class _BookingCheckoutSheetState extends State<BookingCheckoutSheet> {
                         SizedBox(width: 10),
                         Expanded(
                           child: Text(
-                            'Daraz & Pathao 100% Service Protection Guarantee with 30-Day Free Rework.',
+                            'Utsho 100% Protection Guarantee with 30-Day Free Rework.',
                             style: TextStyle(
                               fontSize: 11.5,
                               color: AppColors.success,
@@ -689,7 +689,7 @@ class _BookingCheckoutSheetState extends State<BookingCheckoutSheet> {
               if (!_isPromoApplied)
                 GestureDetector(
                   onTap: () {
-                    _promoController.text = 'PATHAO50';
+                    _promoController.text = 'UTSHO50';
                     _applyPromo();
                   },
                   child: Container(
@@ -699,7 +699,7 @@ class _BookingCheckoutSheetState extends State<BookingCheckoutSheet> {
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: const Text(
-                      'Use PATHAO50',
+                      'Use UTSHO50',
                       style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w700, color: AppColors.primary),
                     ),
                   ),
@@ -718,7 +718,7 @@ class _BookingCheckoutSheetState extends State<BookingCheckoutSheet> {
                     enabled: !_isPromoApplied,
                     style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: colors.textPrimary),
                     decoration: InputDecoration(
-                      hintText: _isPromoApplied ? 'PATHAO50 (Applied)' : 'Enter promo code',
+                      hintText: _isPromoApplied ? 'UTSHO50 (Applied)' : 'Enter promo code',
                       hintStyle: TextStyle(fontSize: 12, color: colors.textHint),
                       filled: true,
                       fillColor: colors.surface,

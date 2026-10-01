@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:service_hub/main.dart';
+import 'package:utsho/main.dart';
 
 void main() {
   testWidgets('App smoke test', (WidgetTester tester) async {

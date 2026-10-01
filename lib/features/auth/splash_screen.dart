@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/theme/app_colors.dart';
 
-/// Premium animated Splash Screen for ServiceHub.
+/// Premium animated Splash Screen for Utsho.
 /// Features a smooth multi-phase entrance animation, ambient brand glow,
 /// and automatically navigates to /login after a 3-second delay.
 class SplashScreen extends StatefulWidget {
@@ -235,13 +235,13 @@ class _SplashScreenState extends State<SplashScreen>
                         opacity: _contentFadeAnim,
                         child: Column(
                           children: [
-                            // "ServiceHub" Brand Wordmark
+                            // "Utsho" Brand Wordmark
                             Row(
                               mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
-                                  'Service',
+                                  'Ut',
                                   style: TextStyle(
                                     fontSize: 34,
                                     fontWeight: FontWeight.w800,
@@ -256,7 +256,7 @@ class _SplashScreenState extends State<SplashScreen>
                                     end: Alignment.bottomRight,
                                   ).createShader(bounds),
                                   child: const Text(
-                                    'Hub',
+                                    'sho',
                                     style: TextStyle(
                                       fontSize: 34,
                                       fontWeight: FontWeight.w900,
