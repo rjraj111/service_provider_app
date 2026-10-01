@@ -11,6 +11,7 @@ import '../../features/search/ai_search_screen.dart';
 import '../../features/tracking/live_tracking_screen.dart';
 import '../../features/chat/chat_screen.dart';
 import '../../features/provider_dashboard/provider_dashboard_screen.dart';
+import '../../features/provider_dashboard/provider_kyc_screen.dart';
 import '../../features/notifications/notifications_screen.dart';
 import '../../features/explore/explore_services_screen.dart';
 import '../../features/auth/splash_screen.dart';
@@ -156,6 +157,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/provider-dashboard',
         builder: (context, state) => const ProviderDashboardScreen(),
+      ),
+      GoRoute(
+        path: '/provider-kyc',
+        builder: (context, state) => const ProviderKycScreen(),
       ),
       GoRoute(
         path: '/notifications',
