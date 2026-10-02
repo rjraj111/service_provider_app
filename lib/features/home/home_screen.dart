@@ -1,8 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/models/category_model.dart';
+import '../../core/services/supabase_service.dart';
 import '../../core/theme/app_colors.dart';
 import '../../l10n/app_localizations.dart';
 import '../reviews/review_bottom_sheet.dart';
@@ -60,17 +63,18 @@ const List<_PromoBanner> _promoBanners = [
 
 /// Home screen with promo banner, unified search bar, service categories,
 /// and top professionals.
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends ConsumerState<HomeScreen> {
   late final PageController _bannerController;
   Timer? _autoScrollTimer;
   int _currentBanner = 0;
+  bool _isGridView = false;
 
   @override
   void initState() {
@@ -103,8 +107,9 @@ class _HomeScreenState extends State<HomeScreen> {
     final l10n = AppLocalizations.of(context);
     final colors = AppColorsResolved.of(context);
 
-    // Build localized category data
-    final categories = _buildCategories(l10n);
+    // Build localized fallback category data
+    final fallbackCategories = _buildCategories(l10n);
+    final categoriesAsync = ref.watch(categoriesProvider);
 
     return Scaffold(
       backgroundColor: colors.background,
@@ -283,56 +288,283 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
 
-            // ─── Service Categories Header ──────────────────────────────
+            // ─── Service Categories Header (Supabase Integrated) ─────────
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(20, 24, 20, 14),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      l10n.serviceCategories,
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                        color: colors.textPrimary,
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () => context.push('/explore'),
-                      child: Text(
-                        l10n.seeAll,
-                        style: const TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.primary,
+                    Row(
+                      children: [
+                        Text(
+                          l10n.serviceCategories,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                            color: colors.textPrimary,
+                          ),
                         ),
-                      ),
+                        const SizedBox(width: 8),
+                        // Live Supabase Status Pill
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                          decoration: BoxDecoration(
+                            color: AppColors.success.withValues(alpha: 0.12),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: AppColors.success.withValues(alpha: 0.35),
+                              width: 1,
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                width: 6,
+                                height: 6,
+                                decoration: const BoxDecoration(
+                                  color: AppColors.success,
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                              const SizedBox(width: 5),
+                              const Text(
+                                'Supabase Live',
+                                style: TextStyle(
+                                  fontSize: 10.5,
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.success,
+                                  letterSpacing: 0.2,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        // View mode toggle: GridView or ListView
+                        IconButton(
+                          icon: Icon(
+                            _isGridView ? Icons.view_carousel_rounded : Icons.grid_view_rounded,
+                            size: 20,
+                            color: colors.textSecondary,
+                          ),
+                          tooltip: _isGridView ? 'Switch to Horizontal List' : 'Switch to Grid View',
+                          onPressed: () {
+                            setState(() {
+                              _isGridView = !_isGridView;
+                            });
+                          },
+                        ),
+                        TextButton(
+                          onPressed: () => context.push('/explore'),
+                          child: Text(
+                            l10n.seeAll,
+                            style: const TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.primary,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
               ),
             ),
 
-            // ─── Horizontal Category List ───────────────────────────────
+            // ─── Supabase Live Categories Section ───────────────────────
             SliverToBoxAdapter(
-              child: SizedBox(
-                height: 110,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  itemCount: categories.length,
-                  separatorBuilder: (_, __) => const SizedBox(width: 14),
-                  itemBuilder: (context, index) {
-                    final category = categories[index];
-                    return _CategoryCard(
-                      icon: category['icon'] as IconData,
-                      label: category['label'] as String,
-                      color: category['color'] as Color,
-                      image: category['image'] as String?,
-                    );
-                  },
+              child: categoriesAsync.when(
+                loading: () => Container(
+                  height: 110,
+                  margin: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: colors.surface,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: colors.border.withValues(alpha: 0.6)),
+                  ),
+                  child: Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const SizedBox(
+                          width: 22,
+                          height: 22,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2.4,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                        const SizedBox(width: 14),
+                        Text(
+                          'Fetching categories from Supabase...',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: colors.textSecondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
+                error: (err, stack) => Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: colors.surface,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: AppColors.error.withValues(alpha: 0.3)),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: AppColors.error.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: const Icon(Icons.sync_problem_rounded, color: AppColors.error, size: 18),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Text(
+                              'Supabase connection notice: ${err.toString().split('\n').first}',
+                              style: const TextStyle(
+                                fontSize: 11.5,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.error,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          TextButton.icon(
+                            onPressed: () => ref.invalidate(categoriesProvider),
+                            icon: const Icon(Icons.refresh_rounded, size: 16),
+                            label: const Text('Retry', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700)),
+                            style: TextButton.styleFrom(
+                              foregroundColor: AppColors.primary,
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        'Showing fallback categories:',
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontStyle: FontStyle.italic,
+                          color: colors.textSecondary,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      SizedBox(
+                        height: 110,
+                        child: ListView.separated(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: fallbackCategories.length,
+                          separatorBuilder: (_, __) => const SizedBox(width: 14),
+                          itemBuilder: (context, index) {
+                            final cat = fallbackCategories[index];
+                            return _CategoryCard(
+                              icon: cat['icon'] as IconData,
+                              label: cat['label'] as String,
+                              color: cat['color'] as Color,
+                              image: cat['image'] as String?,
+                              onTap: () => context.push('/explore', extra: cat['label']),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                data: (List<CategoryModel> categoriesList) {
+                  if (categoriesList.isEmpty) {
+                    return Container(
+                      height: 110,
+                      margin: const EdgeInsets.symmetric(horizontal: 20),
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: colors.surface,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: colors.border.withValues(alpha: 0.6)),
+                      ),
+                      child: Center(
+                        child: Text(
+                          'No categories found in Supabase table.',
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: colors.textSecondary,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    );
+                  }
+
+                  final languageCode = Localizations.localeOf(context).languageCode;
+
+                  if (_isGridView) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: GridView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 4,
+                          mainAxisSpacing: 14,
+                          crossAxisSpacing: 10,
+                          childAspectRatio: 0.68,
+                        ),
+                        itemCount: categoriesList.length,
+                        itemBuilder: (context, index) {
+                          final category = categoriesList[index];
+                          return _CategoryCard(
+                            icon: _getCategoryIcon(category.icon),
+                            label: category.localizedName(languageCode),
+                            color: _getCategoryColor(index),
+                            image: _getCategoryImage(category.name),
+                            networkImageUrl: category.imageUrl,
+                            onTap: () => context.push('/explore', extra: category.name),
+                          );
+                        },
+                      ),
+                    );
+                  }
+
+                  return SizedBox(
+                    height: 110,
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      itemCount: categoriesList.length,
+                      separatorBuilder: (_, __) => const SizedBox(width: 14),
+                      itemBuilder: (context, index) {
+                        final category = categoriesList[index];
+                        return _CategoryCard(
+                          icon: _getCategoryIcon(category.icon),
+                          label: category.localizedName(languageCode),
+                          color: _getCategoryColor(index),
+                          image: _getCategoryImage(category.name),
+                          networkImageUrl: category.imageUrl,
+                          onTap: () => context.push('/explore', extra: category.name),
+                        );
+                      },
+                    ),
+                  );
+                },
               ),
             ),
 
@@ -612,6 +844,66 @@ List<Map<String, dynamic>> _buildCategories(AppLocalizations l10n) {
   ];
 }
 
+// ─── Category Icon, Color & Image Mapping Helpers ───────────────────────────
+
+IconData _getCategoryIcon(String? iconName) {
+  switch (iconName?.toLowerCase()) {
+    case 'ac_unit_rounded':
+    case 'ac_unit':
+      return Icons.ac_unit_rounded;
+    case 'plumbing_rounded':
+    case 'plumbing':
+      return Icons.plumbing_rounded;
+    case 'electrical_services_rounded':
+    case 'electrical_services':
+      return Icons.electrical_services_rounded;
+    case 'cleaning_services_rounded':
+    case 'cleaning_services':
+      return Icons.cleaning_services_rounded;
+    case 'home_repair_service_rounded':
+    case 'home_repair_service':
+      return Icons.home_repair_service_rounded;
+    case 'format_paint_rounded':
+    case 'format_paint':
+      return Icons.format_paint_rounded;
+    case 'carpenter_rounded':
+    case 'carpenter':
+      return Icons.carpenter_rounded;
+    case 'local_shipping_rounded':
+    case 'local_shipping':
+      return Icons.local_shipping_rounded;
+    default:
+      return Icons.build_rounded;
+  }
+}
+
+Color _getCategoryColor(int index) {
+  const colors = [
+    Color(0xFF06B6D4), // AC (Cyan)
+    Color(0xFF3B82F6), // Plumbing (Blue)
+    Color(0xFFF59E0B), // Electrical (Amber)
+    Color(0xFF22C55E), // Cleaning (Emerald)
+    Color(0xFF14B8A6), // Appliance (Teal)
+    Color(0xFFEF4444), // Painting (Red)
+    Color(0xFF8B5CF6), // Carpentry (Purple)
+    Color(0xFFEC4899), // Shifting (Pink)
+  ];
+  return colors[index % colors.length];
+}
+
+String? _getCategoryImage(String name) {
+  final lower = name.toLowerCase();
+  if (lower.contains('ac')) return 'lib/assets/images/ac repair.png';
+  if (lower.contains('plumb')) return 'lib/assets/images/plumbing solution.png';
+  if (lower.contains('electr')) return 'lib/assets/images/electrician working pic.png';
+  if (lower.contains('paint')) return 'lib/assets/images/painting and decor.png';
+  if (lower.contains('clean')) return 'lib/assets/images/home cleaning.png';
+  if (lower.contains('carpent')) return 'lib/assets/images/curpentry and furniture.png';
+  if (lower.contains('shift') || lower.contains('mov')) return 'lib/assets/images/packers and movers.png';
+  if (lower.contains('appliance')) return 'lib/assets/images/appliance repair.png';
+  return null;
+}
+
 // ─── Dummy Professionals Data ───────────────────────────────────────────────
 
 final List<Map<String, dynamic>> _professionals = [
@@ -679,12 +971,16 @@ class _CategoryCard extends StatelessWidget {
   final String label;
   final Color color;
   final String? image;
+  final String? networkImageUrl;
+  final VoidCallback? onTap;
 
   const _CategoryCard({
     required this.icon,
     required this.label,
     required this.color,
     this.image,
+    this.networkImageUrl,
+    this.onTap,
   });
 
   @override
@@ -692,8 +988,53 @@ class _CategoryCard extends StatelessWidget {
     final colors = AppColorsResolved.of(context);
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
+    Widget fallbackIcon() => Container(
+          color: color.withValues(alpha: isDark ? 0.2 : 0.1),
+          child: Center(
+            child: Icon(icon, color: color, size: 28),
+          ),
+        );
+
+    Widget imageContent() {
+      if (networkImageUrl != null && networkImageUrl!.startsWith('http')) {
+        return Image.network(
+          networkImageUrl!,
+          fit: BoxFit.cover,
+          errorBuilder: (_, __, ___) => fallbackIcon(),
+        );
+      }
+      if (image != null) {
+        return Stack(
+          fit: StackFit.expand,
+          children: [
+            Image.asset(
+              image!,
+              fit: BoxFit.cover,
+            ),
+            // Dark gradient overlay for text and icon readability
+            Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.black.withValues(alpha: 0.15),
+                    Colors.black.withValues(alpha: 0.60),
+                  ],
+                ),
+              ),
+            ),
+            Center(
+              child: Icon(icon, color: Colors.white, size: 24),
+            ),
+          ],
+        );
+      }
+      return fallbackIcon();
+    }
+
     return GestureDetector(
-      onTap: () => context.push('/explore', extra: label),
+      onTap: onTap ?? () => context.push('/explore', extra: label),
       child: SizedBox(
         width: 80,
         child: Column(
@@ -717,48 +1058,20 @@ class _CategoryCard extends StatelessWidget {
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(16),
-                child: image != null
-                    ? Stack(
-                        fit: StackFit.expand,
-                        children: [
-                          Image.asset(
-                            image!,
-                            fit: BoxFit.cover,
-                          ),
-                          // Dark gradient overlay for text and icon readability
-                          Container(
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  Colors.black.withValues(alpha: 0.15),
-                                  Colors.black.withValues(alpha: 0.60),
-                                ],
-                              ),
-                            ),
-                          ),
-                          Center(
-                            child: Icon(icon, color: Colors.white, size: 24),
-                          ),
-                        ],
-                      )
-                    : Container(
-                        color: color.withValues(alpha: 0.1),
-                        child: Icon(icon, color: color, size: 28),
-                      ),
+                child: imageContent(),
               ),
             ),
             const SizedBox(height: 8),
             Text(
               label,
               textAlign: TextAlign.center,
-              maxLines: 1,
+              maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
-                fontSize: 12,
+                fontSize: 11.5,
                 fontWeight: FontWeight.w600,
                 color: colors.textPrimary,
+                height: 1.2,
               ),
             ),
           ],

@@ -61,7 +61,8 @@ class _ProviderKycScreenState extends State<ProviderKycScreen> {
       _KycDocItem(
         id: 'selfie',
         title: 'Take a Live Selfie',
-        subtitle: 'Real-time face verification in good lighting without glasses or caps',
+        subtitle:
+            'Real-time face verification in good lighting without glasses or caps',
         tip: 'Hold camera directly at eye level',
         icon: Icons.face_rounded,
       ),
@@ -71,7 +72,9 @@ class _ProviderKycScreenState extends State<ProviderKycScreen> {
   int get _uploadedCount => _documents.where((d) => d.isUploaded).length;
 
   int get _currentStepIndex {
-    if (_documents[0].isUploaded && _documents[1].isUploaded && _documents[2].isUploaded) {
+    if (_documents[0].isUploaded &&
+        _documents[1].isUploaded &&
+        _documents[2].isUploaded) {
       return 2; // Step 3: Review
     } else if (_documents[0].isUploaded && _documents[1].isUploaded) {
       return 1; // Step 2: Selfie
@@ -156,7 +159,8 @@ class _ProviderKycScreenState extends State<ProviderKycScreen> {
                         color: AppColors.primary.withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: Icon(item.icon, color: AppColors.primary, size: 22),
+                      child:
+                          Icon(item.icon, color: AppColors.primary, size: 22),
                     ),
                     const SizedBox(width: 14),
                     Expanded(
@@ -197,10 +201,13 @@ class _ProviderKycScreenState extends State<ProviderKycScreen> {
                       color: colors.surfaceVariant,
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: Icon(Icons.camera_alt_rounded, color: colors.textPrimary, size: 20),
+                    child: Icon(Icons.camera_alt_rounded,
+                        color: colors.textPrimary, size: 20),
                   ),
                   title: Text(
-                    item.id == 'selfie' ? 'Take Live Selfie' : 'Take Photo with Camera',
+                    item.id == 'selfie'
+                        ? 'Take Live Selfie'
+                        : 'Take Photo with Camera',
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w700,
@@ -225,7 +232,8 @@ class _ProviderKycScreenState extends State<ProviderKycScreen> {
                       color: colors.surfaceVariant,
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: Icon(Icons.photo_library_rounded, color: colors.textPrimary, size: 20),
+                    child: Icon(Icons.photo_library_rounded,
+                        color: colors.textPrimary, size: 20),
                   ),
                   title: Text(
                     'Upload from Device Gallery',
@@ -255,7 +263,8 @@ class _ProviderKycScreenState extends State<ProviderKycScreen> {
                         color: AppColors.error.withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: const Icon(Icons.delete_outline_rounded, color: AppColors.error, size: 20),
+                      child: const Icon(Icons.delete_outline_rounded,
+                          color: AppColors.error, size: 20),
                     ),
                     title: const Text(
                       'Remove Uploaded File',
@@ -288,10 +297,12 @@ class _ProviderKycScreenState extends State<ProviderKycScreen> {
     setState(() {
       item.isUploaded = true;
       if (item.id == 'nid_front') {
-        item.fileName = fromCamera ? 'nid_camera_front_scan.jpg' : 'nid_card_front.jpg';
+        item.fileName =
+            fromCamera ? 'nid_camera_front_scan.jpg' : 'nid_card_front.jpg';
         item.fileSize = '2.3 MB';
       } else if (item.id == 'nid_back') {
-        item.fileName = fromCamera ? 'nid_camera_back_scan.jpg' : 'nid_card_back.jpg';
+        item.fileName =
+            fromCamera ? 'nid_camera_back_scan.jpg' : 'nid_card_back.jpg';
         item.fileSize = '1.9 MB';
       } else {
         item.fileName = 'live_selfie_verified.jpg';
@@ -304,7 +315,8 @@ class _ProviderKycScreenState extends State<ProviderKycScreen> {
       SnackBar(
         content: Row(
           children: [
-            const Icon(Icons.check_circle_rounded, color: Colors.white, size: 20),
+            const Icon(Icons.check_circle_rounded,
+                color: Colors.white, size: 20),
             const SizedBox(width: 10),
             Expanded(
               child: Text(
@@ -344,7 +356,8 @@ class _ProviderKycScreenState extends State<ProviderKycScreen> {
           ),
           backgroundColor: AppColors.warning,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           duration: const Duration(seconds: 3),
         ),
       );
@@ -374,7 +387,8 @@ class _ProviderKycScreenState extends State<ProviderKycScreen> {
         return Dialog(
           backgroundColor: colors.surface,
           surfaceTintColor: Colors.transparent,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
           child: Padding(
             padding: const EdgeInsets.fromLTRB(24, 28, 24, 24),
             child: Column(
@@ -446,7 +460,8 @@ class _ProviderKycScreenState extends State<ProviderKycScreen> {
 
                 // Reference verification badge
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                   decoration: BoxDecoration(
                     color: colors.surfaceVariant,
                     borderRadius: BorderRadius.circular(12),
@@ -524,7 +539,8 @@ class _ProviderKycScreenState extends State<ProviderKycScreen> {
         elevation: 0.5,
         shadowColor: Colors.black.withValues(alpha: 0.05),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new_rounded, size: 18, color: colors.textPrimary),
+          icon: Icon(Icons.arrow_back_ios_new_rounded,
+              size: 18, color: colors.textPrimary),
           onPressed: () {
             if (context.canPop()) {
               context.pop();
@@ -549,9 +565,11 @@ class _ProviderKycScreenState extends State<ProviderKycScreen> {
             padding: const EdgeInsets.only(right: 16),
             child: Center(
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 decoration: BoxDecoration(
-                  color: AppColors.accent.withValues(alpha: isDark ? 0.15 : 0.1),
+                  color:
+                      AppColors.accent.withValues(alpha: isDark ? 0.15 : 0.1),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
                     color: AppColors.accent.withValues(alpha: 0.3),
@@ -560,7 +578,8 @@ class _ProviderKycScreenState extends State<ProviderKycScreen> {
                 child: const Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.shield_outlined, size: 13, color: AppColors.accent),
+                    Icon(Icons.shield_outlined,
+                        size: 13, color: AppColors.accent),
                     SizedBox(width: 4),
                     Text(
                       'SECURE KYC',
@@ -602,7 +621,8 @@ class _ProviderKycScreenState extends State<ProviderKycScreen> {
                       border: Border.all(color: colors.border),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.03),
+                          color: Colors.black
+                              .withValues(alpha: isDark ? 0.2 : 0.03),
                           blurRadius: 10,
                           offset: const Offset(0, 3),
                         ),
@@ -662,7 +682,8 @@ class _ProviderKycScreenState extends State<ProviderKycScreen> {
                       onPressed: _autofillAllDemoDocs,
                       style: TextButton.styleFrom(
                         foregroundColor: AppColors.primary,
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 4),
                       ),
                       icon: const Icon(Icons.bolt_rounded, size: 16),
                       label: const Text(
@@ -855,7 +876,11 @@ class _ProviderKycScreenState extends State<ProviderKycScreen> {
       ),
       child: Row(
         children: List.generate(steps.length, (index) {
-          final isCompleted = index < currentIndex || (index == 0 && _documents[0].isUploaded && _documents[1].isUploaded) || (index == 1 && _documents[2].isUploaded);
+          final isCompleted = index < currentIndex ||
+              (index == 0 &&
+                  _documents[0].isUploaded &&
+                  _documents[1].isUploaded) ||
+              (index == 1 && _documents[2].isUploaded);
           final isCurrent = index == currentIndex;
 
           return Expanded(
@@ -934,9 +959,7 @@ class _ProviderKycScreenState extends State<ProviderKycScreen> {
                     width: 24,
                     height: 2,
                     margin: const EdgeInsets.only(bottom: 20),
-                    color: isCompleted
-                        ? AppColors.success
-                        : colors.border,
+                    color: isCompleted ? AppColors.success : colors.border,
                   ),
               ],
             ),
@@ -1002,7 +1025,8 @@ class _ProviderKycScreenState extends State<ProviderKycScreen> {
                     decoration: BoxDecoration(
                       color: isUploaded
                           ? AppColors.success.withValues(alpha: 0.15)
-                          : AppColors.primary.withValues(alpha: isDark ? 0.16 : 0.08),
+                          : AppColors.primary
+                              .withValues(alpha: isDark ? 0.16 : 0.08),
                       borderRadius: BorderRadius.circular(14),
                       border: Border.all(
                         color: isUploaded
@@ -1044,7 +1068,8 @@ class _ProviderKycScreenState extends State<ProviderKycScreen> {
                                   vertical: 3,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: AppColors.success.withValues(alpha: 0.18),
+                                  color:
+                                      AppColors.success.withValues(alpha: 0.18),
                                   borderRadius: BorderRadius.circular(6),
                                 ),
                                 child: const Row(
@@ -1089,7 +1114,8 @@ class _ProviderKycScreenState extends State<ProviderKycScreen> {
               // Upload Action / Status Pill
               if (isUploaded)
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
                     color: colors.surface,
                     borderRadius: BorderRadius.circular(10),
@@ -1130,7 +1156,8 @@ class _ProviderKycScreenState extends State<ProviderKycScreen> {
                 )
               else
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
                     color: colors.surfaceVariant.withValues(alpha: 0.6),
                     borderRadius: BorderRadius.circular(10),
@@ -1233,7 +1260,8 @@ class _ProviderKycScreenState extends State<ProviderKycScreen> {
       children: [
         const Padding(
           padding: EdgeInsets.only(top: 4),
-          child: Icon(Icons.check_circle_outline, size: 13, color: AppColors.success),
+          child: Icon(Icons.check_circle_outline,
+              size: 13, color: AppColors.success),
         ),
         const SizedBox(width: 8),
         Expanded(

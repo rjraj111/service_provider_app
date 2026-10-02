@@ -20,6 +20,7 @@ dependencies:
   # ── Voice / Speech Recognition ────────────────────────────────
   speech_to_text: ^7.5.0
   # ── Networking & Data ─────────────────────────────────────────
+  supabase_flutter: ^2.8.3
   dio: ^5.7.0
   cached_network_image: ^4.0.3
   # ── UI & Design ───────────────────────────────────────────────
